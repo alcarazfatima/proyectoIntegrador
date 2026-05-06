@@ -1,0 +1,24 @@
+extends ../layout.pug 
+block metadata   
+    title Iniciar sesion
+
+block content
+    div
+      div
+        h1 Iniciar sesion
+        form(method='POST', action='/auth/signup')
+          div
+          
+          div
+            label(for='correo') Email
+            input(type='correo', id='correo', name='correo', required)
+          
+          div
+            label(for='password') Contraseña
+            input(type='password', id='password', name='password', required)
+          
+          button(type='submit') Registrarse
+          
+          p
+            | ¿No tienes cuenta? 
+            a(href='/auth/singup') Registrate aquí

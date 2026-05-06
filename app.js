@@ -1,5 +1,8 @@
 import 'dotenv/config';
 import express from 'express';
+import auth from './routes/auth.js';
+
+
 
 //CONSTANTES
 const PORT = process.env.PORT;
@@ -14,6 +17,13 @@ app.use(express.urlencoded({ extended: true }));
 // MOTOR DE PLANTILLAS
 app.set('view engine', 'pug');
 app.set('views', './views');
+
+// RUTAS
+app.use(auth);
+app.get('/', (req, res) => {
+    res.render('index');
+})
+
 
 // SERVIDOR
 app.listen(PORT, (err) => {

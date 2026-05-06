@@ -1,0 +1,31 @@
+extends ../layout.pug ;
+
+block metadata
+    title Registrarse
+
+block content
+    div
+      div
+        h1 Registrarse
+        form(method='POST', action='/auth/signup')
+          div
+            label(for='nombre') Nombre
+            input(type='text', id='nombre', name='nombre', required)
+          
+          div
+            label(for='email') Email
+            input(type='email', id='email', name='email', required)
+          
+          div
+            label(for='password') Contraseña
+            input(type='password', id='password', name='password', required)
+          
+          div
+            label(for='confirmPassword') Confirmar Contraseña
+            input(type='password', id='confirmPassword', name='confirmPassword', required)
+          
+          button(type='submit') Registrarse
+          
+          p
+            | ¿Ya tienes cuenta? 
+            a(href='/auth/login') Inicia sesión aquí
