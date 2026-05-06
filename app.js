@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
-import auth from './routes/auth.js';
+import authRouter from './routes/auth.js';
+
 
 
 
@@ -19,10 +20,11 @@ app.set('view engine', 'pug');
 app.set('views', './views');
 
 // RUTAS
-app.use(auth);
+//app.use(auth);
 app.get('/', (req, res) => {
     res.render('index');
 })
+app.use('/auth', authRouter);
 
 
 // SERVIDOR

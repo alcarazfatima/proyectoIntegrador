@@ -6,7 +6,7 @@ block content
     div
       div
         h1 Iniciar sesion
-        form(method='POST', action='/auth/signup')
+        form(method='POST', action='/auth/login')
           div
           
           div
@@ -16,9 +16,9 @@ block content
           div
             label(for='password') Contraseña
             input(type='password', id='password', name='password', required)
-          
-          button(type='submit') Registrarse
+          div
+            button(type='submit') Registrarse
           
           p
             | ¿No tienes cuenta? 
-            a(href='/auth/singup') Registrate aquí
+            a(href='/auth/signup') Registrate aquí
