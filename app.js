@@ -1,6 +1,8 @@
 import 'dotenv/config';
 import express from 'express';
 import authRouter from './routes/auth.js';
+import sequelize from './models/config.js';
+import './models/sync.js';
 
 
 
@@ -26,12 +28,19 @@ app.get('/', (req, res) => {
 })
 app.use('/auth', authRouter);
 
+//CONEXION BD
+sequelize.sync({ alter: true })
+    .then(() => {
 
-// SERVIDOR
-app.listen(PORT, (err) => {
-    if (err) {
-        console.error('Error al iniciar el servidor:', err);
-        return;
-    }
-    console.log(`Servidor escuchando en el puerto ${PORT}`);
-});
+        // SERVIDOR
+        app.listen(PORT, (err) => {
+            if (err) {
+                console.error('Error al iniciar el servidor:', err);
+                return;
+            }
+            console.log(`Servidor escuchando en el puerto ${PORT}`);
+        });
+    })
+    .catch((err) => {
+        console.error('Error sincronizancon con la BD', err);
+    })
