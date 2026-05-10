@@ -5,37 +5,49 @@ block metadata
     link(rel="stylesheet" href="/style.css")
 
 block content
-    div
-      div
-        h1 Registrarse
-        form(method='POST', action='/auth/signup')
-          div
-            label(for='firstName') Nombre
-            input(type='text', id='firstName', name='firstName', required)
-          div
-            label(for='lastName') Apellido
-            input(type='text', id='lastName', name='lastName', required)  
-          div
-            label(for='birthDate') Fecha de nacimiento
-            input(type='date', id='birthDate', name='birthDate', required)
-          div
-            label(for='email') Email
-            input(type='email', id='email', name='email', required)
-          div
-            label(for='rol') Tipo de cuenta
-            select(name='rol', id= 'rol')
-              option(value='usuario') Usuario
-              option(value='validador') Validador
-          div
-            label(for='password') Contraseña
-            input(type='password', id='password', name='password', required)
-          
-          div
-            label(for='confirmPassword') Confirmar Contraseña
-            input(type='password', id='confirmPassword', name='confirmPassword', required)
-          div
-            button(type='submit') Registrarse
-          
-          p
-            | ¿Ya tienes cuenta? 
-            a(href='/auth/login') Inicia sesión aquí
+    div.row.justify-content-center.align-items-center(style="min-height: 75vh;")
+        div.col-11.col-md-6.col-lg-4(style="max-width: 420px;") 
+            div.card.shadow-sm.border-0
+                div.card-body.p-4
+                    h3.text-center.mb-3.fw-bold Registrarse
+                    
+                    if error
+                        div.alert.alert-danger.py-2.small= error
+
+                    form(method='POST', action='/auth/signup')
+                        div.row.gx-2 
+                            div.mb-2.col-6
+                                label.form-label.small.fw-medium(for='firstName') Nombre
+                                input.form-control.form-control-sm(type='text', id='firstName', name='firstName', placeholder= 'Tu Nombre' required)
+                            div.mb-2.col-6
+                                label.form-label.small.fw-medium(for='lastName') Apellido
+                                input.form-control.form-control-sm(type='text', id='lastName', name='lastName',placeholder= 'Tu Apellido' required)
+                        
+                        div.mb-2
+                            label.form-label.small.fw-medium(for='birthDate') Fecha de nacimiento
+                            input.form-control.form-control-sm(type='date', id='birthDate', name='birthDate', required)
+                        
+                        div.mb-2
+                            label.form-label.small.fw-medium(for='email') Email
+                            input.form-control.form-control-sm(type='email', id='email', name='email', placeholder='ejemplo@correo.com' required)
+                        
+                        div.mb-2
+                            label.form-label.small.fw-medium(for='rol') Rol
+                            select.form-select.form-select-sm(name='rol', id='rol')
+                                option(value='usuario' selected) Usuario
+                                option(value='validador') Validador
+                        
+                        div.row.gx-2
+                            div.mb-2.col-6
+                                label.form-label.small.fw-medium(for='password') Contraseña
+                                input.form-control.form-control-sm(type='password', id='password', name='password', required)
+                            div.mb-3.col-6
+                                label.form-label.small.fw-medium(for='confirmPassword') Confirmar
+                                input.form-control.form-control-sm(type='password', id='confirmPassword', name='confirmPassword', required)
+                        
+                        div.d-grid.mt-2
+                            button.btn.btn-primary(type='submit') Crear cuenta
+                        
+                        div.text-center.mt-3
+                            small.text-muted ¿Ya tienes cuenta? 
+                                a.text-decoration-none(href='/auth/login') Inicia sesión

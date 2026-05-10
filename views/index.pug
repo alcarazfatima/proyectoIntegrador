@@ -1,14 +1,36 @@
 extends layout.pug
 
-block metadata
-  title Fotaza
-
 block content
-  h1 Bienvenid@ a Fotaza 
-  
-   p
-     a(href='/auth/login') Iniciar sesión
-   p
-     a(href='/auth/signup') Registrarse
-   p
-     a(href='/auth/anonimous') Ingresar
+  //- Contenedor principal sin bordes
+  div.container-fluid.p-0
+    div.position-relative.vh-100.d-flex.align-items-center(style="background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; margin-top: -56px")
+      
+      div.container
+        div.row.align-items-center.justify-content-between
+          
+          //- Lado Izquierdo: Slogan
+          div.col-lg-6.text-center.text-lg-start.mb-5.mb-lg-0.text-white
+            h1.display-2.fw-bold Fotaza
+            p.lead.fs-3 Comparte tus mejores momentos con una comunidad de artistas. Descubre, captura y conecta.
+    
+          //- Lado Derecho
+          div.col-md-8.col-lg-5.col-xl-4.mx-auto.mx-lg-0
+            div.card.shadow-lg.border-0.bg-white.bg-opacity-95
+              div.card-body.p-4
+                h4.text-center.mb-4.fw-bold ¡Bienvenido!
+          
+                //- Botones principales
+                div.d-grid.gap-3
+                  a.btn.btn-primary.btn-lg(href="/auth/login") Iniciar Sesión
+                  a.btn.btn-success.btn-lg(href="/auth/signup") Crear cuenta nueva
+            
+                div.position-relative.my-4
+                  hr
+                  span.position-absolute.top-50.start-50.translate-middle.bg-white.px-2.text-muted.small o
+          
+                //- El botón para el usuario anónimo
+                div.text-center
+                  p.small.text-muted.mb-2 ¿Solo quieres echar un vistazo?
+                  a.btn.btn-outline-secondary.w-100(href="/auth/anonimous") 
+                    i.bi.bi-eye.me-2
+                    | Entrar como Invitado

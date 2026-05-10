@@ -4,22 +4,32 @@ block metadata
     link(rel="stylesheet" href="/style.css")
 
 block content
-    div
-      div
-        h1 Iniciar sesion
-        form(method='POST', action='/auth/login')
-          div
-          
-          div
-            label(for='correo') Email
-            input(type='correo', id='correo', name='correo', required)
-          
-          div
-            label(for='password') Contraseña
-            input(type='password', id='password', name='password', required)
-          div
-            button(type='submit') Registrarse
-          
-          p
-            | ¿No tienes cuenta? 
-            a(href='/auth/signup') Registrate aquí
+    
+    div.row.justify-content-center.align-items-center(style="min-height: 75vh;")
+        div.col-11.col-md-6.col-lg-4(style="max-width: 400px;") 
+            div.card.shadow-sm.border-0
+                div.card-body.p-4
+                    h3.text-center.mb-4.fw-bold Iniciar Sesión
+                    
+                    if error
+                        div.alert.alert-danger.py-2.small.text-center= error
+
+                    form(method='POST', action='/auth/login')
+                        div.mb-3
+                            label.form-label.small.fw-medium(for='email') Email
+                            input.form-control.form-control-sm(type='email', id='email', name='email', required, placeholder="ejemplo@correo.com")
+                        
+                        div.mb-3
+                            label.form-label.small.fw-medium(for='password') Contraseña
+                            input.form-control.form-control-sm(type='password', id='password', name='password', required, placeholder="••••••••")
+                        
+                        div.mb-3.form-check
+                            input.form-check-input#remember(type='checkbox' name='remember')
+                            label.form-check-label.small.text-muted(for='remember') Recordarme
+
+                        div.d-grid.mt-4
+                            button.btn.btn-primary(type='submit') Ingresar
+                        
+                        div.text-center.mt-4
+                            small.text-muted ¿No tienes cuenta? 
+                                a.text-decoration-none.fw-bold(href='/auth/signup') Regístrate gratis
