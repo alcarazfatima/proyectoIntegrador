@@ -1,4 +1,5 @@
-import { Router } from "express"
+import { Router } from "express";
+import { registerUser } from '../controllers/authController.js';
 
 const auth = Router()
 auth.get('/login', (req, res) => {
@@ -11,4 +12,5 @@ auth.get('/signup', (req, res) => {
 auth.get('/anonimous', (req, res) => {
     res.render('auth/anonimous')
 })
+auth.post('/signup', registerUser);
 export default auth;

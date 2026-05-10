@@ -10,13 +10,22 @@ block content
         h1 Registrarse
         form(method='POST', action='/auth/signup')
           div
-            label(for='nombre') Nombre
-            input(type='text', id='nombre', name='nombre', required)
-          
+            label(for='firstName') Nombre
+            input(type='text', id='firstName', name='firstName', required)
+          div
+            label(for='lastName') Apellido
+            input(type='text', id='lastName', name='lastName', required)  
+          div
+            label(for='birthDate') Fecha de nacimiento
+            input(type='date', id='birthDate', name='birthDate', required)
           div
             label(for='email') Email
             input(type='email', id='email', name='email', required)
-          
+          div
+            label(for='rol') Tipo de cuenta
+            select(name='rol', id= 'rol')
+              option(value='usuario') Usuario
+              option(value='validador') Validador
           div
             label(for='password') Contraseña
             input(type='password', id='password', name='password', required)
