@@ -1,20 +1,28 @@
 import { Model, DataTypes } from "sequelize";
 import sequelize from "./config.js";
 
-export class Like extends Model { }
+export class Rating extends Model { }
 
-Like.init(
+Rating.init(
     {
         id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true,
         },
+        score: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            validate: {
+                min: 1,
+                max: 5
+            }
+        }
     },
     {
         sequelize,
-        modelName: 'Like',
-        tableName: 'likes',
+        modelName: 'Rating',
+        tableName: 'ratings',
         timestamps: true,// esto habilita el createdAt y el updatedAt
     }
 

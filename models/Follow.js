@@ -16,6 +16,7 @@ Follow.init(
         sequelize,
         modelName: 'Follow',
         tableName: 'follows',
-        timestamps: true
+        timestamps: true,
+
     },
 )
