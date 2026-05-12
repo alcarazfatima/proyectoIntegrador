@@ -20,6 +20,10 @@ Image.init(
         isMain: {
             type: DataTypes.BOOLEAN,
             defaultValue: false
+        },
+        licencia: {
+            type: DataTypes.ENUM('copyright', 'sinCopyright'),
+            defaultValue: 'sinCopyright'
         }
     },
     {
