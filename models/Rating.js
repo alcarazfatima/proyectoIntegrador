@@ -5,11 +5,23 @@ export class Rating extends Model { }
 
 Rating.init(
     {
-        id: {
+        userId: {
             type: DataTypes.INTEGER,
-            autoIncrement: true,
             primaryKey: true,
+            references: {
+                model: 'users',
+                key: 'id'
+            }
         },
+        imageId: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            references: {
+                model: 'images',
+                key: 'id'
+            }
+        },
+
         score: {
             type: DataTypes.INTEGER,
             allowNull: false,

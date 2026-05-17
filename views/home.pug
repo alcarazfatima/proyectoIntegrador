@@ -1,0 +1,38 @@
+extends layout.pug
+
+block content
+  .container.my-5
+    .text-center.mb-5
+      if user
+        h2.fw-bold Bienvenido de nuevo, #{user.username}
+      else
+        h2.fw-bold.text-dark Explora las mejores fotos de nuestra comunidad
+        p.text-muted Registrate para puntuar el contenido.
+
+    .row.row-cols-1.justify-content-center.g-5
+      if posts && posts.length > 0
+        each post in posts
+          .col.col-md-9.col-lg-7
+            .card.shadow-sm.border-0.mb-4
+              if post.Images && post.Images.length > 0
+                img.card-img-top(
+                  src=post.Images[0].srcBase64 
+                  alt=post.title 
+                  style="height: 550px; object-fit: cover; background-color: #f8f9fa;"
+                )
+              else
+                .bg-secondary.text-white.text-center.py-5(style="height: 350px; display: flex; align-items: center; justify-content: center;") Sin Imagen
+              
+              .card-body.p-4
+                h4.card-title.fw-bold.text-dark.mb-2= post.title
+                p.card-text.text-muted.fs-5= post.description
+                
+                hr.text-muted.my-3
+                
+                //- sección para rating
+                .d-flex.justify-content-between.align-items-center
+                  span.text-warning.fs-4 ★★★☆☆
+                  small.text-muted.fw-medium Estado: #{post.status}
+      else 
+        .col.col-md-8.col-lg-6.text-center.py-5
+          .alert.alert-info No hay publicaciones disponibles en este momento.

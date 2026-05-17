@@ -1,9 +1,11 @@
 import 'dotenv/config';
 import express from 'express';
 import authRouter from './routes/auth.js';
+import postRoutes from './routes/postRoutes.js';
 import sequelize from './models/config.js';
+import { Post, User, Image } from './models/sync.js';
 import './models/sync.js';
-
+import im from './mockImg.js';
 
 
 
@@ -27,10 +29,41 @@ app.get('/', (req, res) => {
     res.render('index');
 })
 app.use('/auth', authRouter);
+app.use('/', postRoutes);
 
 //CONEXION BD
 sequelize.sync({ alter: true })
-    .then(() => {
+    .then(async () => {
+        console.log('Tablas sincronizadas');
+        /*
+        // --- INICIO DATOS DE PRUEBA ---
+      
+        //Verifica si hay post
+        const postCount = await Post.count();
+        console.log(postCount)
+
+        // Creamos un post de prueba. 
+        const nuevoPost = await Post.create({
+            title: 'Publicacion de prueba',
+            description: 'Probando la arquitectura',
+            allowComments: true,
+            status: 'active',
+            userId: 3
+        });
+
+        /* creo la imagen
+        await Image.create({
+            data: Buffer.from(im, 'base64'),
+            extension: 'png',
+            isMain: true,
+            licencia: 'sinCopyright',
+            postId: nuevoPost.id
+        });
+
+        console.log('Datos de prueba creados exitosamente');*/
+
+
+        // --- FIN DATOS DE PRUEBA ---
 
         // SERVIDOR
         app.listen(PORT, (err) => {

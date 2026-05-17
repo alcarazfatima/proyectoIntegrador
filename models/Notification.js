@@ -12,7 +12,7 @@ Notification.init(
         },
 
         tipo: {
-            type: DataTypes.ENUM('like', 'comentario', 'seguimiento', 'compra', 'denuncia'),
+            type: DataTypes.ENUM('valoracion', 'comentario', 'seguimiento', 'compra', 'denuncia'),
             allowNull: false
         },
         referenciaId: {

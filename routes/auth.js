@@ -10,7 +10,7 @@ auth.get('/signup', (req, res) => {
     res.render('auth/signup')
 })
 auth.get('/anonimous', (req, res) => {
-    res.render('auth/anonimous')
+    res.redirect('home')
 })
 auth.post('/signup', registerUser);
 export default auth;

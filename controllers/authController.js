@@ -22,3 +22,12 @@ export const registerUser = async (req, res) => {
         res.render('auth/signup', { error: 'Error al crear cuenta' });
     }
 };
+
+// controllers/authController.js
+export const loginAnónimo = (req, res) => {
+    // 1. Podés limpiar la sesión por las dudas
+    req.session.user = null;
+
+    // 2. LA CLAVE: Redirigir a la ruta que ya creamos
+    res.redirect('/home');
+};

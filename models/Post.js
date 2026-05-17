@@ -28,7 +28,6 @@ Post.init(
         sequelize,
         modelName: 'Post',
         tableName: 'posts',
-        createdAt: true,
-        deletedAt: true,
+        timestamps: true
     },
 );

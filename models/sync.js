@@ -17,7 +17,8 @@ Post.belongsTo(User, { foreignKey: 'userId' });
 User.belongsToMany(User, {
     through: Follow,
     as: 'following',
-    foreignKey: 'followerId'
+    foreignKey: 'followerId',
+    onDelete: 'CASCADE'
 });
 User.belongsToMany(User, {
     through: Follow,
@@ -44,7 +45,8 @@ Image.belongsTo(Post, { foreignKey: 'postId' });
 
 Image.belongsToMany(Tag, {
     through: 'ImageTags',
-    foreignKey: 'imageId'
+    foreignKey: 'imageId',
+    onDelete: 'CASCADE'
 });
 Tag.belongsToMany(Image, {
     through: 'ImageTags',
@@ -52,19 +54,20 @@ Tag.belongsToMany(Image, {
 });
 
 //relacion de notificacion
-Notification.belongsTo(User, { as: 'recipient', foreignKey: 'recipientId' });
-User.hasMany(Notification, { foreignKey: 'recipientId' });
+Notification.belongsTo(User, { as: 'receptor', foreignKey: 'receptorId' });
+User.hasMany(Notification, { foreignKey: 'receptorId', onDelete: 'CASCADE' });
 Notification.belongsTo(User, { as: 'actor', foreignKey: 'actorId' });
 
 //relacion de colecciones
 
-User.hasMany(Collection, { foreignKey: 'userId' });
+User.hasMany(Collection, { foreignKey: 'userId', onDelete: 'CASCADE' });
 Collection.belongsTo(User, { foreignKey: 'userId' });
 
 Collection.belongsToMany(Post, {
     through: 'collection_posts',
     foreignKey: 'collectionId',
-    otherKey: 'postId'
+    otherKey: 'postId',
+    onDelete: 'CASCADE'
 });
 Post.belongsToMany(Collection, {
     through: 'collection_posts',
@@ -72,27 +75,17 @@ Post.belongsToMany(Collection, {
     otherKey: 'collectionId'
 });
 
-// relacion de usuario y sus favoritos
-User.belongsToMany(Post, {
-    through: 'userFavorites',
-    as: 'favorites',
-    foreignKey: 'userId'
-});
-Post.belongsToMany(User, {
-    through: 'userFavorites',
-    as: 'favoritedBy',
-    foreignKey: 'postId'
-});
-
 //relacion de valoracion ex like 
 User.belongsToMany(Image, {
     through: Rating,
-    foreignKey: 'userId'
+    foreignKey: 'userId',
+    onDelete: 'CASCADE'
 });
 
 Image.belongsToMany(User, {
     through: Rating,
-    foreignKey: 'imageId'
+    foreignKey: 'imageId',
+    onDelete: 'CASCADE'
 });
 
 
