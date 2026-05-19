@@ -1,0 +1,36 @@
+extends layout.pug
+
+block content
+  include auth/navSimple.pug
+
+  .container.my-5
+    .row.justify-content-center
+      .col-md-8.col-lg-6
+        .card.shadow-sm.border-0.p-3
+          h2.fw-bold.text-dark.mb-4.text-center Crear Nueva Publicación
+          
+          form(action="/newPost" method="POST" enctype="multipart/form-data")
+            
+            .mb-3
+              label.form-label.fw-semibold(for="title") Título de la publicación
+              input#title.form-control(type="text" name="title" required)
+            
+            .mb-3
+              label.form-label.fw-semibold(for="description") Descripción
+              textarea#description.form-control(name="description" rows="3" required placeholder="Contanos más sobre esta captura...")
+            
+            .mb-3
+              label.form-label.fw-semibold(for="licencia") Tipo de Licencia
+              select#licencia.form-select(name="licencia" required)
+                option(value="conCopyright") Con Copyright (Privada / Protegida)
+                option(value="sinCopyright") Sin Copyright (Pública / Libre)
+            
+            .mb-3
+              label.form-label.fw-semibold(for="imagenes") Seleccionar Imágenes (Podés elegir varias)
+              //- multiple permite elegir más de una foto a la vez
+              input#imagenes.form-control(type="file" name="imagenes" accept="image/*" multiple required)
+              div.form-text Max 5MB por imagen. Formatos: PNG, JPG, JPEG.
+            
+            .d-grid.gap-2.mt-4
+              button.btn.btn-warning.btn-lg.fw-bold(type="submit") Publicar en Fotaza
+              a.btn.btn-link.text-muted(href="/home") Cancelar

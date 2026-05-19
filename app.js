@@ -5,8 +5,6 @@ import postRoutes from './routes/postRoutes.js';
 import sequelize from './models/config.js';
 import { Post, User, Image } from './models/sync.js';
 import './models/sync.js';
-import im from './mockImg.js';
-
 
 
 //CONSTANTES
@@ -51,13 +49,13 @@ sequelize.sync({ alter: true })
             userId: 3
         });
 
-        /* creo la imagen
+
         await Image.create({
             data: Buffer.from(im, 'base64'),
             extension: 'png',
             isMain: true,
             licencia: 'sinCopyright',
-            postId: nuevoPost.id
+            postId: 1
         });
 
         console.log('Datos de prueba creados exitosamente');*/

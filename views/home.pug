@@ -1,6 +1,19 @@
 extends layout.pug
 
 block content
+  
+  nav.navbar.navbar-dark.bg-dark.sticky-top.shadow-sm
+    .container
+      a.navbar-brand.d-flex.align-items-center(href="/") 
+        i.bi.bi-camera.me-2.text-white 
+        span.fw-bold Fotaza
+      
+      
+      a.btn.btn-warning.fw-semibold.d-flex.align-items-center.px-3.py-2(href="/newPost")
+        i.bi.bi-plus-circle.me-2
+        | Crear Publicación
+
+  //- Contenido del home
   .container.my-5
     .text-center.mb-5
       if user
@@ -14,12 +27,30 @@ block content
         each post in posts
           .col.col-md-9.col-lg-7
             .card.shadow-sm.border-0.mb-4
+              
               if post.Images && post.Images.length > 0
-                img.card-img-top(
-                  src=post.Images[0].srcBase64 
-                  alt=post.title 
-                  style="height: 550px; object-fit: cover; background-color: #f8f9fa;"
-                )
+                
+                //- CASO 1: TIENE UNA SOLA IMAGEN
+                if post.Images.length === 1
+                  if post.Images[0].srcBase64
+                    img.w-100(
+                      src=post.Images[0].srcBase64 
+                      alt=post.title 
+                      style="height: 550px; object-fit: cover; background-color: #f8f9fa;"
+                    )
+                
+                //- CASO 2: TIENE VARIAS IMÁGENES
+                else
+                  .row.g-1.m-0
+                    each img in post.Images
+                      if img.srcBase64
+                        .col-6
+                          img.w-100(
+                            src=img.srcBase64 
+                            alt=post.title 
+                            style="height: 240px; object-fit: cover; background-color: #f8f9fa;"
+                          )
+                          
               else
                 .bg-secondary.text-white.text-center.py-5(style="height: 350px; display: flex; align-items: center; justify-content: center;") Sin Imagen
               
@@ -28,11 +59,9 @@ block content
                 p.card-text.text-muted.fs-5= post.description
                 
                 hr.text-muted.my-3
-                
-                //- sección para rating
                 .d-flex.justify-content-between.align-items-center
                   span.text-warning.fs-4 ★★★☆☆
                   small.text-muted.fw-medium Estado: #{post.status}
-      else 
-        .col.col-md-8.col-lg-6.text-center.py-5
+      else
+        .col.col-md-9.col-lg-7.text-center.py-5
           .alert.alert-info No hay publicaciones disponibles en este momento.
