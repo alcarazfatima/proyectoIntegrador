@@ -1,0 +1,73 @@
+extends layout.pug
+
+block content
+  include auth/navSimple.pug
+
+  .container.my-5
+    //- cabecera del Perfil, estilo a pulir
+    .row.mb-4
+      .col-10.mx-auto
+        .card.shadow-sm.border-0.p-4.bg-dark.text-white(style="border-radius: 12px;")
+          .d-flex.align-items-center
+            .bg-warning.text-dark.rounded-circle.d-flex.align-items-center.justify-content-center.me-3(style="width: 60px; height: 60px;")
+              i.bi.bi-person-fill.fs-2
+            div
+              h2.fw-bold.mb-0 #{perfilUser.username}
+              p.text-muted.mb-0 Miembro de la comunidad Fotaza
+
+    //- gallery?
+    .row
+      .col-10.mx-auto
+        h4.fw-semibold.text-dark.mb-3 Publicaciones compartidas
+
+        if perfilUser.Posts && perfilUser.Posts.length > 0
+          //- grilla para que entren 3 tarjetas por fila
+          .row.row-cols-1.row-cols-md-3.g-4
+            each post in perfilUser.Posts
+              .col
+                .card.h-100.shadow-sm.border-0
+                  if post.Images && post.Images.length > 0
+                    //- carrusel de Bootstrap
+                    div.carousel.slide(id=`carousel-${post.id}` data-bs-ride="false")
+                      
+                      //- indicadores inferiores (puntitos) si hay mas de una foto
+                      if post.Images.length > 1
+                        div.carousel-indicators
+                          each img, index in post.Images
+                            button(type="button" data-bs-target=`#carousel-${post.id}` data-bs-slide-to=index class=(index === 0 ? 'active' : '') aria-current=(index === 0 ? 'true' : 'false'))
+
+                      //- contenedor de las imagenes del carrusel
+                      div.carousel-inner
+                        each img, index in post.Images
+                          div.carousel-item(class=(index === 0 ? 'active' : ''))
+                            img.d-block.w-100(
+                              src=img.srcBase64 
+                              alt=post.title 
+                              style="height: 200px; object-fit: cover; border-top-left-radius: 8px; border-top-right-radius: 8px;"
+                            )
+                      
+                      //- flechitas de atras-adelante
+                      if post.Images.length > 1
+                        button.carousel-control-prev(type="button" data-bs-target=`#carousel-${post.id}` data-bs-slide="prev")
+                          span.carousel-control-prev-icon(aria-hidden="true")
+                          span.visually-hidden Anterior
+                        button.carousel-control-next(type="button" data-bs-target=`#carousel-${post.id}` data-bs-slide="next")
+                          span.carousel-control-next-icon(aria-hidden="true")
+                          span.visually-hidden Siguiente
+                  else
+                    .bg-secondary.text-white.d-flex.align-items-center.justify-content-center(style="height: 200px;")
+                      i.bi.bi-camera.fs-1
+
+                  //- datos de la publicacion
+                  .card-body.p-3
+                    h5.card-title.fw-bold.text-dark #{post.title}
+                    p.card-text.text-muted.small.text-truncate #{post.description}
+                  
+                  //- insignia de tipo de licencia
+                  .card-footer.bg-transparent.border-0.p-3.pt-0
+                    span.badge(class=post.Images[0].licencia === 'sinCopyright' ? 'bg-success' : 'bg-danger')
+                      | #{post.Images[0].licencia === 'sinCopyright' ? 'Pública' : 'Protegida'}
+        else
+          .text-center.py-5.bg-white.rounded.shadow-sm
+            i.bi.bi-images.text-muted.display-4
+            p.text-muted.mt-2 Este usuario todavía no ha compartido ninguna foto.
