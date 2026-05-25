@@ -44,7 +44,7 @@ block content
                 .bg-secondary.text-white.text-center.py-5(style="height: 350px; display: flex; align-items: center; justify-content: center;") Sin Imagen
               
               .card-body.p-4
-                //- cabecera con el autor y botón Seguir
+                //- Cabecera con el autor y botón Seguir
                 if post.User
                   .d-flex.justify-content-between.align-items-center.mb-3.pb-2.border-bottom
                     .d-flex.align-items-center
@@ -54,15 +54,21 @@ block content
                     
                     //- Si estás registrada y la foto NO es tuya, podés seguirlo
                     if user && user.id !== post.userId
-                      form(action="/follow" method="POST" class="m-0")
-                        input(type="hidden" name="followingId" value=post.userId)
-                        button.btn.btn-sm.btn-outline-primary.fw-semibold(type="submit")
-                          i.bi.bi-person-plus-fill.me-1
-                          | Seguir
+                      if misSeguidos && misSeguidos.includes(post.userId)
+                        span.badge.bg-light.text-muted.border.fw-semibold 
+                          i.bi.bi-check2.me-1
+                          | Siguiendo
+                      else    
+                        form(action="/follow" method="POST" class="m-0")
+                          input(type="hidden" name="followingId" value=post.userId)
+                          button.btn.btn-sm.btn-outline-primary.fw-semibold(type="submit")
+                            i.bi.bi-person-plus-fill.me-1
+                            | Seguir
 
+                //- ✨ CORREGIDO: Todo esto vuelve a estar al mismo nivel de la tarjeta (fuera del if post.User)
                 h4.card-title.fw-bold.text-dark.mb-2= post.title
                 p.card-text.text-muted.fs-5= post.description
-                
+            
                 hr.text-muted.my-3
                 .d-flex.justify-content-between.align-items-center
                   span.text-warning.fs-4 ★★★☆☆

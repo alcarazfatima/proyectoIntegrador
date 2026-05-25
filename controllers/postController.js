@@ -28,6 +28,7 @@ export const getHome = async (req, res) => {
                 { userId: miId },
                 { '$Images.licencia$': 'sinCopyright' }
             ];
+            req.listaSeguidos = idSeguidos;
         }
 
 
@@ -79,7 +80,8 @@ export const getHome = async (req, res) => {
 
         res.render('home', {
             posts: posts || [],
-            user: req.session?.user || null
+            user: req.session?.user || null,
+            misSeguidos: req.listaSeguidos || []
         });
 
     } catch (error) {

@@ -18,6 +18,9 @@ export const getPerfilusuario = async (req, res) => {
         if (!userInstance) {
             return res.status(404).send('Usuario no encontrado');
         }
+
+        const cantidadSeguidos = await Follow.count({ where: { followerId: id } });
+        const cantidadSeguidores = await Follow.count({ where: { followingId: id } });
         const usuario = userInstance.get({ plain: true });
 
         if (usuario.Posts && usuario.Posts.length > 0) {
@@ -33,7 +36,9 @@ export const getPerfilusuario = async (req, res) => {
         }
         res.render('profile', {
             perfilUser: usuario,
-            user: req.session.user
+            user: req.session.user,
+            contadorSeguidos: cantidadSeguidos,
+            contadorSeguidores: cantidadSeguidores
         });
 
     } catch (error) {

@@ -4,49 +4,66 @@ block content
   include navbar.pug
 
   .container.my-5
-    //- cabecera del Perfil, estilo a pulir
-    .row.mb-4
-      .col-10.mx-auto
-        .card.shadow-sm.border-0.p-4.bg-dark.text-white(style="border-radius: 12px;")
-          .d-flex.align-items-center
-            .bg-warning.text-dark.rounded-circle.d-flex.align-items-center.justify-content-center.me-3(style="width: 60px; height: 60px;")
-              i.bi.bi-person-fill.fs-2
-            div
-              h2.fw-bold.mb-0 #{perfilUser.username}
-              p.text-muted.mb-0 Miembro de la comunidad Fotaza
+    //- ✨ CABECERA DEL PERFIL: Diseño corregido y alineado
+    .row.mb-5
+      .col-12.col-md-10.mx-auto
+        .card.shadow-sm.border-0.p-4.bg-dark.text-white(style="border-radius: 16px;")
+          .d-flex.flex-column.flex-sm-row.align-items-center.justify-content-between.gap-3
+            
+            //- Sección Izquierda: Avatar e Información básica
+            .d-flex.align-items-center.flex-column.flex-sm-row.text-center.text-sm-start
+              .bg-warning.text-dark.rounded-circle.d-flex.align-items-center.justify-content-center.mb-3.mb-sm-0.me-sm-4(style="width: 75px; height: 75px; min-width: 75px;")
+                i.bi.bi-person-fill.fs-1
+              div
+                h2.fw-bold.mb-1 @#{perfilUser.username}
+                p.text-white-50.small.mb-0
+                  i.bi.bi-patch-check-fill.text-warning.me-1
+                  | Miembro de la comunidad Fotaza
 
-    //- gallery?
+            //- Sección Derecha: Contadores Estadísticos alineados
+            .d-flex.gap-4.bg-secondary.bg-opacity-25.px-4.py-2.rounded-pill
+              .text-center
+                span.fw-bold.fs-4.d-block.text-warning= contadorSeguidores
+                small.text-white-50.text-uppercase.fw-semibold(style="font-size: 0.75rem;") seguidores
+              .border-start.border-secondary
+              .text-center
+                span.fw-bold.fs-4.d-block.text-warning= contadorSeguidos
+                small.text-white-50.text-uppercase.fw-semibold(style="font-size: 0.75rem;") seguidos
+
+    //- SECCIÓN DE GALERÍA DE IMÁGENES
     .row
-      .col-10.mx-auto
-        h4.fw-semibold.text-dark.mb-3 Publicaciones compartidas
+      .col-12.col-md-10.mx-auto
+        h4.fw-bold.text-dark.mb-4 
+          i.bi.bi-grid-3x3-gap-fill.me-2.text-warning
+          | Publicaciones compartidas
 
         if perfilUser.Posts && perfilUser.Posts.length > 0
-          //- grilla para que entren 3 tarjetas por fila
-          .row.row-cols-1.row-cols-md-3.g-4
+          //- Grilla adaptativa: 1 col en celular, 2 en tablet, 3 en compu
+          .row.row-cols-1.row-cols-sm-2.row-cols-md-3.g-4
             each post in perfilUser.Posts
               .col
-                .card.h-100.shadow-sm.border-0
+                .card.h-100.shadow-sm.border-0(style="border-radius: 12px; overflow: hidden;")
                   if post.Images && post.Images.length > 0
-                    //- carrusel de Bootstrap
+                    //- Carrusel de Bootstrap
                     div.carousel.slide(id=`carousel-${post.id}` data-bs-ride="false")
                       
-                      //- indicadores inferiores (puntitos) si hay mas de una foto
+                      //- Indicadores inferiores (puntitos) si hay más de una foto
                       if post.Images.length > 1
                         div.carousel-indicators
                           each img, index in post.Images
                             button(type="button" data-bs-target=`#carousel-${post.id}` data-bs-slide-to=index class=(index === 0 ? 'active' : '') aria-current=(index === 0 ? 'true' : 'false'))
 
-                      //- contenedor de las imagenes del carrusel
+                      //- Contenedor de las imágenes del carrusel
                       div.carousel-inner
                         each img, index in post.Images
                           div.carousel-item(class=(index === 0 ? 'active' : ''))
                             img.d-block.w-100(
                               src=img.srcBase64 
                               alt=post.title 
-                              style="height: 200px; object-fit: cover; border-top-left-radius: 8px; border-top-right-radius: 8px;"
+                              style="height: 220px; object-fit: cover;"
                             )
                       
-                      //- flechitas de atras-adelante
+                      //- Flechitas de atrás-adelante
                       if post.Images.length > 1
                         button.carousel-control-prev(type="button" data-bs-target=`#carousel-${post.id}` data-bs-slide="prev")
                           span.carousel-control-prev-icon(aria-hidden="true")
@@ -55,19 +72,20 @@ block content
                           span.carousel-control-next-icon(aria-hidden="true")
                           span.visually-hidden Siguiente
                   else
-                    .bg-secondary.text-white.d-flex.align-items-center.justify-content-center(style="height: 200px;")
+                    .bg-secondary.text-white.d-flex.align-items-center.justify-content-center(style="height: 220px;")
                       i.bi.bi-camera.fs-1
 
-                  //- datos de la publicacion
+                  //- Datos de la publicación
                   .card-body.p-3
-                    h5.card-title.fw-bold.text-dark #{post.title}
+                    h5.card-title.fw-bold.text-dark.mb-1 #{post.title}
                     p.card-text.text-muted.small.text-truncate #{post.description}
                   
-                  //- insignia de tipo de licencia
+                  //- Insignia de tipo de licencia
                   .card-footer.bg-transparent.border-0.p-3.pt-0
-                    span.badge(class=post.Images[0].licencia === 'sinCopyright' ? 'bg-success' : 'bg-danger')
-                      | #{post.Images[0].licencia === 'sinCopyright' ? 'Pública' : 'Protegida'}
+                    if post.Images && post.Images[0]
+                      span.badge.px-2.py-1.fw-semibold(class=post.Images[0].licencia === 'sinCopyright' ? 'bg-success' : 'bg-danger')
+                        | #{post.Images[0].licencia === 'sinCopyright' ? 'Pública' : 'Protegida'}
         else
-          .text-center.py-5.bg-white.rounded.shadow-sm
+          .text-center.py-5.bg-white.rounded.shadow-sm.border
             i.bi.bi-images.text-muted.display-4
             p.text-muted.mt-2 Este usuario todavía no ha compartido ninguna foto.
