@@ -1,0 +1,23 @@
+nav.navbar.navbar-dark.bg-dark.sticky-top.shadow-sm
+    .container
+      a.navbar-brand.d-flex.align-items-center(href="/home") 
+        i.bi.bi-camera.me-2.text-white 
+        span.fw-bold Fotaza
+      
+      if user
+        .d-flex.align-items-center.gap-2
+          //- botones para user registrado
+          a.btn.btn-outline-warning.fw-semibold.d-flex.align-items-center.px-3.py-2(href="/profile")
+            i.bi.bi-person-circle.me-2
+            | Mi Perfil
+          a.btn.btn-outline-warning.fw-semibold.d-flex.align-items-center.px-3.py-2(href="/newPost")
+            i.bi.bi-plus-circle.me-2
+            | Crear Publicación
+          a.btn.btn-outline-danger.fw-semibold.d-flex.align-items-center.px-3.py-2(href="/auth/logout")
+            i.bi.bi-box-arrow-right.me-2
+            | Salir
+      else
+        //- boton para invitado
+        a.btn.btn-outline-light.fw-semibold.d-flex.align-items-center.px-3.py-2(href="/auth/login")
+          i.bi.bi-box-arrow-in-right.me-2
+          | Iniciar Sesión

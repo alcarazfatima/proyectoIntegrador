@@ -33,6 +33,10 @@ block content
                             input.form-control.form-control-sm(type='email', id='email', name='email', placeholder='ejemplo@correo.com' required)
                         
                         div.mb-2
+                            label.form-label.small.fw-medium(for='username') Username
+                            input.form-control.form-control-sm(type='text', id='username', name='username', required)
+                        
+                        div.mb-2
                             label.form-label.small.fw-medium(for='rol') Rol
                             select.form-select.form-select-sm(name='rol', id='rol')
                                 option(value='usuario' selected) Usuario

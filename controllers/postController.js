@@ -1,14 +1,35 @@
-import { Post, Image, User } from '../models/sync.js';
+import { Post, Image, User, Follow } from '../models/sync.js';
+import { Op } from 'sequelize';
 
 export const getHome = async (req, res) => {
     try {
 
+        let filtroPost = {
+            status: 'active'
+        }
         let condicionesImagen = null;
 
         if (!req.session || !req.session.user) {
 
             condicionesImagen = { licencia: 'sinCopyright' };
+        } else {
+            const miId = req.session.user.id;
+
+            const conexiones = await Follow.findAll({
+                where: { followerId: miId },
+                attributes: ['followingId']//los que sigo
+            });
+
+            const idSeguidos = conexiones.map(c => c.followingId);
+
+            //aca filtro , veo a los que sigo y a los que tienen publicacion libre
+            filtroPost[Op.or] = [
+                { userId: { [Op.in]: idSeguidos } },
+                { userId: miId },
+                { '$Images.licencia$': 'sinCopyright' }
+            ];
         }
+
 
         const listaIncludes = []
 
@@ -21,22 +42,23 @@ export const getHome = async (req, res) => {
         } else {
             listaIncludes.push({
                 model: Image,
-                required: true
+                required: false
             });
         }
 
         if (User) {
             listaIncludes.push({
                 model: User,
-                attributes: ['firstName', 'lastName'],
+                attributes: ['username', 'firstName', 'lastName'],
                 required: false // porque tengo algunos post sin userid
             });
 
 
         }
         const postsInstances = await Post.findAll({
-            where: { status: 'active' },
-            include: listaIncludes
+            where: filtroPost,
+            include: listaIncludes,
+            order: [['createdAt', 'DESC']]
         });
 
         const posts = postsInstances.map(instancia => instancia.get({ plain: true }))

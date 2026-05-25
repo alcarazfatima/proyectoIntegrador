@@ -1,7 +1,9 @@
 import 'dotenv/config';
 import express from 'express';
+import session from 'express-session';
 import authRouter from './routes/auth.js';
 import postRoutes from './routes/postRoutes.js';
+import userRoutes from './routes/userRoutes.js'
 import sequelize from './models/config.js';
 import { Post, User, Image } from './models/sync.js';
 import './models/sync.js';
@@ -12,14 +14,26 @@ const PORT = process.env.PORT;
 
 const app = express();
 
+// MOTOR DE PLANTILLAS
+app.set('view engine', 'pug');
+app.set('views', './views');
+
+
 // MIDDLEWARES
 app.use(express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// MOTOR DE PLANTILLAS
-app.set('view engine', 'pug');
-app.set('views', './views');
+app.use(session({
+    secret: 'claveSecretaParaFotazaULP', // Frase para encriptar la pulsera
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: false, // Ponemos false porque estamos trabajando en localhost
+        maxAge: 1000 * 60 * 60 * 24 // La sesión dura 1 día entero
+    }
+}));
+
 
 // RUTAS
 //app.use(auth);
@@ -28,6 +42,7 @@ app.get('/', (req, res) => {
 })
 app.use('/auth', authRouter);
 app.use('/', postRoutes);
+app.use('/', userRoutes)
 
 //CONEXION BD
 sequelize.sync({ alter: true })

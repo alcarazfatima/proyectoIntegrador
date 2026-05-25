@@ -2,7 +2,7 @@ import { User } from "../models/User.js";
 
 export const registerUser = async (req, res) => {
     try {
-        const { firstName, lastName, email, birthDate, rol, password, confirmPassword } = req.body;
+        const { firstName, lastName, email, birthDate, username, rol, password, confirmPassword } = req.body;
         if (password !== confirmPassword) {
             return res.render('auth/signup', { error: 'Las contraseñas no coinciden' });
         }
@@ -13,7 +13,8 @@ export const registerUser = async (req, res) => {
                 email,
                 birthDate,
                 rol,
-                password
+                password,
+                username
             }
         );
         res.redirect('/auth/login')
@@ -23,11 +24,41 @@ export const registerUser = async (req, res) => {
     }
 };
 
-// controllers/authController.js
+export const loginUser = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        // Busco el usuario por su correo
+        const usuarioEncontrado = await User.findOne({ where: { email } });
+
+        // Verifico si existe y si tiene bien la contraseña
+        if (usuarioEncontrado && usuarioEncontrado.password === password) {
+
+            // Se crea la session para recordar quién es en toda la app
+            req.session.user = {
+                id: usuarioEncontrado.id,
+                username: `${usuarioEncontrado.firstName} ${usuarioEncontrado.lastName}`,
+                email: usuarioEncontrado.email,
+                rol: usuarioEncontrado.rol
+            };
+
+            // redirijo al home 
+            return res.redirect('/home');
+        } else {
+            // Si falla, volvemos a mostrar el login avisando el error
+            return res.render('auth/login', { error: 'Correo o contraseña incorrectos' });
+        }
+    } catch (error) {
+        console.error('Error al iniciar sesión', error);
+        res.render('auth/login', { error: 'Error interno en el servidor' });
+    }
+};
+
+
 export const loginAnónimo = (req, res) => {
-    // 1. Podés limpiar la sesión por las dudas
+
     req.session.user = null;
 
-    // 2. LA CLAVE: Redirigir a la ruta que ya creamos
+    // Redirigir a la ruta 
     res.redirect('/home');
 };
