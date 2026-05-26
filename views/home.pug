@@ -50,7 +50,7 @@ block content
                     .d-flex.align-items-center
                       .bg-warning.text-dark.rounded-circle.d-flex.align-items-center.justify-content-center.me-2(style="width: 32px; height: 32px;")
                         i.bi.bi-person-fill
-                      span.fw-bold.text-dark @#{post.User.username}
+                      a.fw-bold.text-dark.text-decoration-none(href=`/profile/${post.User.username}`) @#{post.User.username}
                     
                     //- Si estás registrada y la foto NO es tuya, podés seguirlo
                     if user && user.id !== post.userId

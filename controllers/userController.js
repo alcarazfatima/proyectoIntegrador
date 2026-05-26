@@ -2,9 +2,10 @@ import { User, Post, Image, Follow } from '../models/sync.js';
 
 export const getPerfilusuario = async (req, res) => {
     try {
-        const id = req.session.user.id;
+        const { username } = req.params;
 
-        const userInstance = await User.findByPk(id, {
+        const userInstance = await User.findOne({
+            where: { username: username },
             include: [{
                 model: Post,
                 where: { status: 'active' },
@@ -19,8 +20,10 @@ export const getPerfilusuario = async (req, res) => {
             return res.status(404).send('Usuario no encontrado');
         }
 
-        const cantidadSeguidos = await Follow.count({ where: { followerId: id } });
-        const cantidadSeguidores = await Follow.count({ where: { followingId: id } });
+        const perfilId = userInstance.id;
+
+        const cantidadSeguidos = await Follow.count({ where: { followerId: perfilId } });
+        const cantidadSeguidores = await Follow.count({ where: { followingId: perfilId } });
         const usuario = userInstance.get({ plain: true });
 
         if (usuario.Posts && usuario.Posts.length > 0) {
@@ -34,11 +37,15 @@ export const getPerfilusuario = async (req, res) => {
                 }
             });
         }
+
+        const esMiPerfil = req.session.uer && req.session.user.id === perfilId;
+
         res.render('profile', {
             perfilUser: usuario,
             user: req.session.user,
             contadorSeguidos: cantidadSeguidos,
-            contadorSeguidores: cantidadSeguidores
+            contadorSeguidores: cantidadSeguidores,
+            esMiPerfil: esMiPerfil
         });
 
     } catch (error) {

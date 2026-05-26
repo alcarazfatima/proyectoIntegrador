@@ -9,7 +9,11 @@
       each com in post.Comments
         .bg-light.p-2.rounded.mb-2.small
           .d-flex.justify-content-between.align-items-center.mb-1
-            span.fw-bold.text-dark @#{com.User ? com.User.username : 'anonimo'}
+            if com.User
+              a.fw-bold.text-dark.text-decoration-none(href=`/profile/${com.User.username}`) @#{com.User.username}
+            else 
+              span.fw-bold.text-dark @anonimo
+
             if com.createdAt
               span.text-muted(style="font-size: 0.7rem;")= new Date(com.createdAt).toLocaleDateString()
           p.mb-0.text-secondary= com.content
