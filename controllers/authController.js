@@ -37,7 +37,7 @@ export const loginUser = async (req, res) => {
             // Se crea la session para recordar quién es en toda la app
             req.session.user = {
                 id: usuarioEncontrado.id,
-                username: `${usuarioEncontrado.firstName} ${usuarioEncontrado.lastName}`,
+                username: `${usuarioEncontrado.username}`,
                 email: usuarioEncontrado.email,
                 rol: usuarioEncontrado.rol
             };

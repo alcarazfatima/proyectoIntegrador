@@ -3,7 +3,8 @@ import express from 'express';
 import session from 'express-session';
 import authRouter from './routes/auth.js';
 import postRoutes from './routes/postRoutes.js';
-import userRoutes from './routes/userRoutes.js'
+import userRoutes from './routes/userRoutes.js';
+import commentRoutes from './routes/commentRoutes.js';
 import sequelize from './models/config.js';
 import { Post, User, Image } from './models/sync.js';
 import './models/sync.js';
@@ -42,7 +43,8 @@ app.get('/', (req, res) => {
 })
 app.use('/auth', authRouter);
 app.use('/', postRoutes);
-app.use('/', userRoutes)
+app.use('/', userRoutes);
+app.use('/', commentRoutes);
 
 //CONEXION BD
 sequelize.sync({ alter: true })

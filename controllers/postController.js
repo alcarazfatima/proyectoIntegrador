@@ -1,4 +1,4 @@
-import { Post, Image, User, Follow } from '../models/sync.js';
+import { Post, Image, User, Follow, Comment } from '../models/sync.js';
 import { Op } from 'sequelize';
 
 export const getHome = async (req, res) => {
@@ -53,9 +53,18 @@ export const getHome = async (req, res) => {
                 attributes: ['username', 'firstName', 'lastName'],
                 required: false // porque tengo algunos post sin userid
             });
-
-
         }
+
+        listaIncludes.push({
+            model: Comment,
+            required: false,
+            include: [{
+                model: User,
+                attributes: ['username'],
+                required: false
+            }]
+        })
+
         const postsInstances = await Post.findAll({
             where: filtroPost,
             include: listaIncludes,
