@@ -1,0 +1,49 @@
+extends layout.pug
+
+block content
+  include navbar.pug
+
+  .container.my-5
+    .row
+      .col-12.col-md-8.mx-auto
+        h3.fw-bold.text-dark.mb-4 
+          i.bi.bi-bell-fill.me-2.text-warning
+          | Mis Notificaciones
+
+        if notificaciones && notificaciones.length > 0
+          .list-group.shadow-sm
+            each noti in notificaciones
+              //- si no esta leida tiene un fondo diferente (border-warning o bg-light)
+              .list-group-item.p-3(class=noti.leida ? '' : 'border-start border-warning border-3 bg-light')
+                .d-flex.justify-content-between.align-items-center
+                  
+                  div
+                    //- mensaje segun el tipo de notificación
+                    span.fw-medium
+                      if noti.tipo === 'seguimiento'
+                        i.bi.bi-person-plus-fill.text-primary.me-2
+                        | @#{noti.actor.username} comenzó a seguirte.
+                      else if noti.tipo === 'comentario'
+                        i.bi.bi-chat-left-text-fill.text-success.me-2
+                        | @#{noti.actor.username} comentó tu publicación.
+                      else if noti.tipo === 'valoracion'
+                        i.bi.bi-star-fill.text-warning.me-2
+                        | @#{noti.actor.username} valoró tu fotografía.
+                      else if noti.tipo === 'compra'
+                        i.bi.bi-bag-check-fill.text-info.me-2
+                        | A @#{noti.actor.username} le interesa adquirir tu imagen.
+                    
+                    //- la fecha formateada 
+                    small.text-muted.d-block.mt-1
+                      i.bi.bi-clock.me-1
+                      | #{new Date(noti.createdAt).toLocaleDateString('es-AR')} - #{new Date(noti.createdAt).toLocaleTimeString('es-AR', {hour: '2-digit', minute:'2-digit'})}
+
+                  //- boton para marcar como leida 
+                  if !noti.leida
+                    form(action=`/notifications/${noti.id}/leer` method="POST" class="mb-0")
+                      button.btn.btn-sm.btn-outline-secondary(type="submit" title="Marcar como leída")
+                        i.bi.bi-check2-all
+        else
+          .text-center.py-5.bg-white.rounded.shadow-sm.border
+            i.bi.bi-bell-slash.text-muted.display-4
+            p.text-muted.mt-2 No tenés ninguna notificación 

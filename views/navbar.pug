@@ -7,6 +7,8 @@ nav.navbar.navbar-dark.bg-dark.sticky-top.shadow-sm
       if user
         .d-flex.align-items-center.gap-2
           //- botones para user registrado
+          a.btn.btn-outline-warning.fw-semibold.d-inline-flex.align-items-center.justify-content-center.px-0.py-2(href="/notifications" style="width: 42px; height: 42px;")
+            i.bi.bi-bell-fill.fs-5
           a.btn.btn-outline-warning.fw-semibold.d-flex.align-items-center.px-3.py-2(href=`/profile/${user.username}`)
             i.bi.bi-person-circle.me-2
             | Mi Perfil

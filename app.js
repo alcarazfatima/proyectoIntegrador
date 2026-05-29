@@ -5,8 +5,9 @@ import authRouter from './routes/auth.js';
 import postRoutes from './routes/postRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import commentRoutes from './routes/commentRoutes.js';
+import notificationRoutes from './routes/notificationRoutes.js';
 import sequelize from './models/config.js';
-import { Post, User, Image } from './models/sync.js';
+import { Post, User, Image, Notification } from './models/sync.js';
 import './models/sync.js';
 
 
@@ -35,6 +36,10 @@ app.use(session({
     }
 }));
 
+app.use(async (req, res, next) => {
+
+
+})
 
 // RUTAS
 //app.use(auth);
@@ -45,6 +50,7 @@ app.use('/auth', authRouter);
 app.use('/', postRoutes);
 app.use('/', userRoutes);
 app.use('/', commentRoutes);
+app.use('/', notificationRoutes)
 
 //CONEXION BD
 sequelize.sync({ alter: true })

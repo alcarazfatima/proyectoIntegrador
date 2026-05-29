@@ -1,4 +1,4 @@
-import { User, Post, Image, Follow } from '../models/sync.js';
+import { User, Post, Image, Follow, Notification } from '../models/sync.js';
 
 export const getPerfilusuario = async (req, res) => {
     try {
@@ -65,14 +65,25 @@ export const postSeguirUsuario = async (req, res) => {
         const followerId = req.session.user.id;
         const { followingId } = req.body;
 
-        await Follow.findOrCreate({
+        const [follow, created] = await Follow.findOrCreate({
             where: {
                 followerId: followerId,
                 followingId: followingId
             }
 
         });
-        res.redirect('/home');
+
+        if (created) {
+            await Notification.create({
+                tipo: 'seguimiento',
+                receptorId: followingId,
+                actorId: followerId,
+                referenciaId: follow.id,
+                leida: false
+            })
+        }
+
+        res.redirect(req.get('referer') || `/profile/${followingId}`);
 
     } catch (error) {
         console.error('Error al seguir al usuario', error);

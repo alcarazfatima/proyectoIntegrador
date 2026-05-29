@@ -26,10 +26,57 @@ block content
             
             .mb-3
               label.form-label.fw-semibold(for="imagenes") Seleccionar Imágenes (Podés elegir varias)
-              //- multiple permite elegir más de una foto a la vez
               input#imagenes.form-control(type="file" name="imagenes" accept="image/*" multiple required)
               div.form-text Max 5MB por imagen. Formatos: PNG, JPG, JPEG.
             
+            //- contenedor para mostrar las miniaturas en grilla usando Bootstrap
+            .mb-3
+              #preview-container.d-flex.flex-wrap.gap-2.mt-2
+
             .d-grid.gap-2.mt-4
               button.btn.btn-warning.btn-lg.fw-bold(type="submit") Publicar en Fotaza
               a.btn.btn-link.text-muted(href="/home") Cancelar
+
+  script.
+    const inputImagenes = document.getElementById('imagenes');
+    const previewContainer = document.getElementById('preview-container');
+
+    inputImagenes.addEventListener('change', function() {
+      // liampiar las previsualizaciones anteriores cada vez que eligen fotos nuevas
+      previewContainer.innerHTML = '';
+
+      const archivos = this.files;
+
+      if (archivos) {
+        // recorrecada archivo seleccionado
+        Array.from(archivos).forEach(archivo => {
+          // valida que sea una imagen
+          if (archivo.type.startsWith('image/')) {
+            const lector = new FileReader();
+
+            // se crea la miniatura
+            lector.onload = function(evento) {
+              // crea un elemento div para la imagen
+              const contenedorMiniatura = document.createElement('div');
+              contenedorMiniatura.style.position = 'relative';
+              contenedorMiniatura.style.width = '80px';
+              contenedorMiniatura.style.height = '80px';
+
+              // crea la imagen en si con clases de Bootstrap 
+              const img = document.createElement('img');
+              img.src = evento.target.result;
+              img.className = 'img-thumbnail object-fit-cover rounded';
+              img.style.width = '100%';
+              img.style.height = '100%';
+
+              // mete la imagen en contnedor y en la grilla
+              contenedorMiniatura.appendChild(img);
+              previewContainer.appendChild(contenedorMiniatura);
+            }
+
+            // aca lee el archivo como una URL de datos base64
+            lector.readAsDataURL(archivo);
+          }
+        });
+      }
+    });
