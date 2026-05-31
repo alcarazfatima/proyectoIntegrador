@@ -4,7 +4,7 @@ export const postCrearComentario = async (req, res) => {
 
     try {
         if (!req.session || !req.session.user) {
-            return res.status(401).send("Tenes que estar logueado para comentar");
+            return alertaYVolver(res, req, 401, 'Tenes que estar logueado para comentar');
         }
 
         const userId = req.session.user.id;

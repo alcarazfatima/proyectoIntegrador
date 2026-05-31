@@ -43,13 +43,13 @@ Image.belongsTo(Post, { foreignKey: 'postId' });
 
 // relaciones de imagen 
 
-Image.belongsToMany(Tag, {
-    through: 'ImageTags',
-    foreignKey: 'imageId',
+Post.belongsToMany(Tag, {
+    through: 'PostTags',
+    foreignKey: 'postId',
     onDelete: 'CASCADE'
 });
-Tag.belongsToMany(Image, {
-    through: 'ImageTags',
+Tag.belongsToMany(Post, {
+    through: 'PostTags',
     foreignKey: 'tagId'
 });
 
@@ -87,6 +87,8 @@ Image.belongsToMany(User, {
     foreignKey: 'imageId',
     onDelete: 'CASCADE'
 });
+Image.hasMany(Rating, { foreignKey: 'imageId' });
+Rating.belongsTo(Image, { foreignKey: 'imageId' });
 
 
 export { User, Post, Image, Comment, Rating, Tag, Follow, Report, Notification, Collection };

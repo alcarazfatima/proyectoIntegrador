@@ -1,28 +1,25 @@
-import { Post, Image, User, Follow, Comment } from '../models/sync.js';
+import sequelize from '../models/config.js';
+import { Post, Image, User, Follow, Comment, Rating } from '../models/sync.js';
 import { Op } from 'sequelize';
+import { alertaYVolver } from '../utils/alerta.js';
 
 export const getHome = async (req, res) => {
     try {
-
-        let filtroPost = {
-            status: 'active'
-        }
+        let filtroPost = { status: 'active' };
         let condicionesImagen = null;
 
         if (!req.session || !req.session.user) {
-
             condicionesImagen = { licencia: 'sinCopyright' };
         } else {
             const miId = req.session.user.id;
 
             const conexiones = await Follow.findAll({
                 where: { followerId: miId },
-                attributes: ['followingId']//los que sigo
+                attributes: ['followingId']
             });
 
             const idSeguidos = conexiones.map(c => c.followingId);
 
-            //aca filtro , veo a los que sigo y a los que tienen publicacion libre
             filtroPost[Op.or] = [
                 { userId: { [Op.in]: idSeguidos } },
                 { userId: miId },
@@ -31,19 +28,21 @@ export const getHome = async (req, res) => {
             req.listaSeguidos = idSeguidos;
         }
 
+        const listaIncludes = [];
 
-        const listaIncludes = []
-
+        // Traemos el modelo Image limpio, incluyendo sus Ratings para calcular el promedio en JS
         if (condicionesImagen) {
             listaIncludes.push({
                 model: Image,
                 where: condicionesImagen,
-                required: true
+                required: true,
+                include: [{ model: Rating, required: false }] // Trae los votos asociados
             });
         } else {
             listaIncludes.push({
                 model: Image,
-                required: false
+                required: false,
+                include: [{ model: Rating, required: false }]
             });
         }
 
@@ -51,7 +50,7 @@ export const getHome = async (req, res) => {
             listaIncludes.push({
                 model: User,
                 attributes: ['username', 'firstName', 'lastName'],
-                required: false // porque tengo algunos post sin userid
+                required: false
             });
         }
 
@@ -63,7 +62,7 @@ export const getHome = async (req, res) => {
                 attributes: ['username'],
                 required: false
             }]
-        })
+        });
 
         const postsInstances = await Post.findAll({
             where: filtroPost,
@@ -71,21 +70,28 @@ export const getHome = async (req, res) => {
             order: [['createdAt', 'DESC']]
         });
 
-        const posts = postsInstances.map(instancia => instancia.get({ plain: true }))
+        // ✨ PROCESAMIENTO SEGURO EN JAVASCRIPT (Cero cuelgues de SQL)
+        const posts = postsInstances.map(instancia => {
+            const p = instancia.get({ plain: true });
 
-        if (posts && posts.length > 0) {
-            posts.forEach(post => {
-                // Verificamos si el post tiene imágenes
-                if (post.Images && post.Images.length > 0) {
-                    // RECORREMOS TODAS LAS IMÁGENES DEL POST
-                    post.Images.forEach(image => {
-                        if (image.data) {
-                            image.srcBase64 = `data:image/${image.extension};base64,${image.data.toString('base64')}`;
-                        }
-                    });
-                }
-            });
-        }
+            if (p.Images && p.Images.length > 0) {
+                p.Images.forEach(img => {
+                    // Calculamos el promedio manualmente recorriendo el array de Ratings que nos trajo Sequelize
+                    if (img.Ratings && img.Ratings.length > 0) {
+                        const suma = img.Ratings.reduce((acc, r) => acc + r.score, 0);
+                        img.promedioVotos = Math.round(suma / img.Ratings.length);
+                    } else {
+                        img.promedioVotos = 0; // Si no tiene votos, arranca en cero
+                    }
+
+                    // Convertimos el binario a Base64 para Pug
+                    if (img.data) {
+                        img.srcBase64 = `data:image/${img.extension};base64,${img.data.toString('base64')}`;
+                    }
+                });
+            }
+            return p;
+        });
 
         res.render('home', {
             posts: posts || [],
@@ -106,13 +112,13 @@ export const getCrearPost = (req, res) => {
 export const postCrearPost = async (req, res) => {
     try {
         if (!req.session || !req.session.user) {
-            return res.status(401).send('Tenés que estar logueado para crear una publicación.');
+            return alertaYVolver(res, req, 401, 'Tenes que estar logueado para crear una publicación');
         }
         const { title, description, licencia } = req.body;
         const files = req.files; // Acá aloja Multer los archivos cargados
 
         if (!files || files.length === 0) {
-            return res.status(400).send('Tenés que subir al menos una imagen.');
+            return alertaYVolver(res, req, 400, 'Tenes que subir al menos una imagen');
         }
 
         // 1. Creamos el registro del Posteo en la base de datos

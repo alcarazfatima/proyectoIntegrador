@@ -1,0 +1,17 @@
+.rating-component.my-2
+  form(action="/posts/rating" method="POST" class="mb-0 d-flex align-items-center gap-2")
+    //-paso el id de la imagen actual de forma oculta
+    input(type="hidden" name="imageId" value=image.id)
+    
+    .d-flex.gap-1
+      //-estrellas interactivas
+      each estrella in [1, 2, 3, 4, 5]
+        button.btn.p-0.border-0.bg-transparent(type="submit" name="score" value=estrella title=`Calificar con ${estrella} estrellas`)
+          //- compara lo que me dice la subconsulta del avg y pongo las estrellas
+          if image.promedioVotos >= estrella
+            i.bi.bi-star-fill.text-warning.fs-4
+          else
+            i.bi.bi-star.text-warning.fs-4
+            
+    if image.promedioVotos > 0
+      small.text-muted.fw-medium.ms-1 (#{image.promedioVotos.toFixed(1)})

@@ -70,7 +70,13 @@ block content
             
                 hr.text-muted.my-3
                 .d-flex.justify-content-between.align-items-center
-                  span.text-warning.fs-4 ★★★☆☆
+                  //- seccin de las estrellas
+                  if post.Images && post.Images.length > 0
+                    - let image = post.Images[0]
+                    include ratingStars.pug
+                  else
+                    span.text-muted.small Sin calificaciones
+                    
                   small.text-muted.fw-medium Estado: #{post.status}
                 
                 include comment.pug
