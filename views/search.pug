@@ -1,0 +1,81 @@
+extends layout.pug
+
+block content
+  include navbar.pug
+
+  .container.my-5
+    .row.mb-4
+      .col-12.col-md-10.mx-auto
+        h2.fw-bold.text-white.mb-3 Motor de Búsqueda
+        
+        //- formulario de filtros combinables (apunta a la ruta del controlador)
+        form(action="/search" method="GET" class="card p-4 shadow-sm bg-dark text-white" style="border-radius: 16px; border: 1px solid #343a40;")
+          .row.g-3.align-items-end
+            
+            //- filtro segun titulo, etiqueta, descripcion
+            .col-12(class=user ? 'col-md-7' : 'col-md-12')
+              label.form-label.small.text-white-50.fw-semibold ¿Qué estás buscando?
+              .input-group
+                span.input-group-text.bg-secondary.border-0.text-white
+                  i.bi.bi-search
+                input.form-control.bg-secondary.bg-opacity-25.text-white.border-0(
+                  type="text" 
+                  name="query" 
+                  placeholder="Ej: playa, retrato, @usuario..." 
+                  value=filtrosActuales.query
+                )
+            
+            //- filtro de licencia
+            if user
+              .col-12.col-md-3
+                label.form-label.small.text-white-50.fw-semibold Tipo de Licencia
+                select.form-select.bg-secondary.bg-opacity-25.text-white.border-0(name="licencia")
+                  option(value="") Todas las licencias
+                  option(value="sinCopyright" selected=(filtrosActuales.licencia === 'sinCopyright')) Pública (Sin Copyright)
+                  option(value="conCopyright" selected=(filtrosActuales.licencia === 'conCopyright')) Protegida (Con Copyright)
+            
+            //- boton para la busqueda
+            .col-12(class=user ? 'col-md-2' : 'col-md-12 text-end')
+              button.btn.btn-warning.text-dark.w-100.fw-bold(type="submit")
+                | Buscar
+
+    //- Seccion para los resultados
+    .row
+      .col-12.col-md-10.mx-auto
+        if posts && posts.length > 0
+          p.text-muted.mb-4 Se encontraron #{posts.length} publicaciones de la comunidad.
+          
+          .row
+            each post in posts
+              .col-12.col-md-6.mb-4
+                .card.shadow-sm.border-0.h-100(style="border-radius: 16px; overflow: hidden;")
+                  
+                  //- muestra la primera imagen del posteo
+                  if post.Images && post.Images.length > 0
+                    img.w-100(src=post.Images[0].srcBase64 style="height: 250px; object-fit: cover;")
+                  else
+                    .bg-secondary.text-white.d-flex.align-items-center.justify-content-center(style="height: 250px;")
+                      i.bi.bi-camera.fs-1
+                  
+                  //- info de la publicacion
+                  .card-body.p-3.d-flex.flex-column.justify-content-between
+                    div
+                      .d-flex.justify-content-between.align-items-center.mb-2
+                        a.small.text-decoration-none.text-primary.fw-bold(href=`/profile/${post.User.username}`) @#{post.User.username}
+                        span.badge(class=post.Images[0].licencia === 'sinCopyright' ? 'bg-success' : 'bg-danger')
+                          | #{post.Images[0].licencia === 'sinCopyright' ? 'Pública' : 'Protegida'}
+                      
+                      h5.card-title.fw-bold.text-dark.mb-1= post.title
+                      p.card-text.text-muted.small= post.description
+                    
+                    .d-flex.justify-content-between.align-items-center.mt-3
+                      
+                      - let image = post.Images[0]
+                      include ratingStars.pug
+                      
+                      a.btn.btn-sm.btn-outline-dark.fw-semibold(href=`/profile/${post.User.username}`) Ver perfil
+        else
+          //- vacio no hay resultados o es la primera vez que entra
+          .text-center.py-5.bg-dark.text-white.rounded.shadow-sm(style="border: 1px solid #343a40; border-radius: 16px;")
+            i.bi.bi-images.text-muted.display-4.d-block.mb-3
+            p.text-muted.mb-0 No se encontraron publicaciones con esos filtros o aún no iniciaste una búsqueda.

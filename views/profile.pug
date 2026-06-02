@@ -19,6 +19,22 @@ block content
                 p.text-white-50.small.mb-0
                   i.bi.bi-patch-check-fill.text-warning.me-1
                   | Miembro de la comunidad Fotaza
+                
+                //- BOTON DE SEGUIMIENTO 
+                if !esMiPerfil && user
+                  .mt-2
+                    if yaLoSigo
+                      form(action="/follow/dejarDeSeguir" method="POST")
+                        input(type="hidden" name="followingId" value=perfilUser.id)
+                        button.btn.btn-sm.btn-outline-danger.fw-bold.px-3(type="submit" style="border-radius: 20px;")
+                          i.bi.bi-person-dash-fill.me-1
+                          | Dejar de seguir
+                    else
+                      form(action="/follow"  method="POST")
+                        input(type="hidden" name="followingId" value=perfilUser.id)
+                        button.btn.btn-sm.btn-warning.text-dark.fw-bold.px-3(type="submit" style="border-radius: 20px;")
+                          i.bi.bi-person-plus-fill.me-1
+                          | Seguir
 
             //- Sección Derecha: Contadores Estadísticos alineados
             .d-flex.gap-4.bg-secondary.bg-opacity-25.px-4.py-2.rounded-pill
@@ -33,6 +49,7 @@ block content
     //- SECCIÓN DE GALERÍA DE IMÁGENES
     .row
       .col-12.col-md-10.mx-auto
+
         if perfilUser.Posts && perfilUser.Posts.length > 0
           .row.justify-content-center
             each post in perfilUser.Posts
@@ -70,17 +87,25 @@ block content
                     .bg-secondary.text-white.d-flex.align-items-center.justify-content-center(style="height: 220px;")
                       i.bi.bi-camera.fs-1
 
-                  //- Datos de la publicación
+                  //- Datos de la publicacion
                   .card-body.p-3
-                    h5.card-title.fw-bold.text-dark.mb-1 #{post.title}
-                    p.card-text.text-muted.small.text-truncate #{post.description}
-                  
+                    .d-flex.justify-content-between.align-items-start
+                      div
+                        h5.card-title.fw-bold.text-dark.mb-1 #{post.title}
+                        p.card-text.text-muted.small.mb-0 #{post.description}
+                      
+                      //- seccio de estrellas
+                      if post.Images && post.Images.length > 0
+                        - let image = post.Images[0] 
+                        .text-end
+                          include ratingStars.pug
+
                   //- Insignia de tipo de licencia
                   .card-footer.bg-transparent.border-0.p-3.pt-0
                     if post.Images && post.Images[0]
                       span.badge.px-2.py-1.fw-semibold(class=post.Images[0].licencia === 'sinCopyright' ? 'bg-success' : 'bg-danger')
                         | #{post.Images[0].licencia === 'sinCopyright' ? 'Pública' : 'Protegida'}
-                    include comment.pug   
+                    include comment.pug
         else
           .text-center.py-5.bg-white.rounded.shadow-sm.border
             i.bi.bi-images.text-muted.display-4
