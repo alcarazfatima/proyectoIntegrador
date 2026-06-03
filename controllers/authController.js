@@ -8,8 +8,6 @@ export const registerUser = async (req, res) => {
             return res.render('auth/signup', { error: 'Las contraseñas no coinciden' });
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
-
         await User.create(
             {
                 firstName,
@@ -17,7 +15,7 @@ export const registerUser = async (req, res) => {
                 email,
                 birthDate,
                 rol,
-                password: hashedPassword,
+                password,
                 username
             }
         );

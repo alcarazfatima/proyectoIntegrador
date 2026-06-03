@@ -1,5 +1,5 @@
 import sequelize from '../models/config.js';
-import { Post, Image, User, Follow, Comment, Rating } from '../models/sync.js';
+import { Post, Image, User, Follow, Comment, Rating, Tag } from '../models/sync.js';
 import { Op } from 'sequelize';
 import { alertaYVolver } from '../utils/alerta.js';
 
@@ -70,7 +70,7 @@ export const getHome = async (req, res) => {
             order: [['createdAt', 'DESC']]
         });
 
-        // ✨ PROCESAMIENTO SEGURO EN JAVASCRIPT (Cero cuelgues de SQL)
+        // PROCESAMIENTO SEGURO EN JAVASCRIPT (Cero cuelgues de SQL)
         const posts = postsInstances.map(instancia => {
             const p = instancia.get({ plain: true });
 
@@ -114,7 +114,7 @@ export const postCrearPost = async (req, res) => {
         if (!req.session || !req.session.user) {
             return alertaYVolver(res, req, 401, 'Tenes que estar logueado para crear una publicación');
         }
-        const { title, description, licencia } = req.body;
+        const { title, description, licencia, tags } = req.body;
         const files = req.files; // Acá aloja Multer los archivos cargados
 
         if (!files || files.length === 0) {
@@ -130,7 +130,29 @@ export const postCrearPost = async (req, res) => {
             userId: req.session.user.id
         });
 
-        // 2. Recorremos todas las imágenes del array y las guardamos asociadas al post
+        // PROCESAMOS LAS ETIQUETAS Y LAS GUARDAMOS EN LA RELACION
+        if (tags && tags.trim() !== "") {
+            // hace un arreglo de etiquetas, si hay mas de una
+            const listaTags = tags.split(',')
+                .map(t => t.trim().replace('#', '').toLowerCase())
+                .filter(t => t.length > 0); //para no meter etiquetas vacias
+
+            const tagsInstancias = [];
+
+            for (const nombreTag of listaTags) {
+                // findOrCreate busca si el tag ya existe 
+                // si existe lo usa, si no, lo crea de cero
+                const [tagInstancia] = await Tag.findOrCreate({
+                    where: { name: nombreTag }
+                });
+                tagsInstancias.push(tagInstancia);
+            }
+
+            // para cargarlas en la tabla intermedia
+            await nuevoPost.addTags(tagsInstancias);
+        }
+
+        // Recorremos todas las imágenes del array y las guardamos asociadas al post
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
 

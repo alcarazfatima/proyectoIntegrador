@@ -1,5 +1,6 @@
 import { Model, DataTypes } from "sequelize";
 import sequelize from "./config.js";
+import bcrypt from "bcrypt";
 
 export class User extends Model { }
 
@@ -48,5 +49,19 @@ User.init(
         tableName: 'users', // nombre de la tabla
         createdAt: true,
         deletedAt: true,
+        hooks: {
+            beforeCreate: async (user) => {
+                if (user.password) {
+                    // encripta antes de guardar por primera vez
+                    user.password = await bcrypt.hash(user.password, 10);
+                }
+            },
+            beforeUpdate: async (user) => {
+                if (user.changed('password')) {
+                    // por si si el usuario decide cambiar su contraseña en el futuro
+                    user.password = await bcrypt.hash(user.password, 10);
+                }
+            }
+        }
     },
 );

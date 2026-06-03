@@ -23,6 +23,10 @@ block content
               select#licencia.form-select(name="licencia" required)
                 option(value="copyright") Con Copyright (Privada / Protegida)
                 option(value="sinCopyright") Sin Copyright (Pública / Libre)
+            .mb-3
+              label.form-label.fw-semibold(for="tags") Etiquetas / Tags
+              input#tags.form-control(type="text" name="tags" placeholder="ej: paisaje, naturaleza, retrato, cordoba")
+              div.form-text Separá las palabras usando comas. No hace falta poner el símbolo #.
             
             .mb-3
               label.form-label.fw-semibold(for="imagenes") Seleccionar Imágenes (Podés elegir varias)
