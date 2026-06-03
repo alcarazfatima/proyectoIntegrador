@@ -15,25 +15,17 @@ export const getBuscarPublicaciones = async (req, res) => {
 
         let condicionesPost = { status: 'active' };
 
-        if (query) {
-            condicionesPost[Op.or] = [
-                { title: { [Op.like]: `%${query}%` } },
-                { description: { [Op.like]: `%${query}%` } }
-            ];
-        }
-
-        let includeTag = {
-            model: Tag,
-            required: false
-        };
-
         const postEncontrados = await Post.findAll({
             where: condicionesPost,
             include: [
-                includeTag,
+                {
+                    model: Tag,
+                    required: false
+                },
                 {
                     model: User,
-                    attributes: ['id', 'username']
+                    attributes: ['id', 'username'],
+                    required: false
                 },
                 {
                     model: Image,
@@ -47,6 +39,13 @@ export const getBuscarPublicaciones = async (req, res) => {
 
         let posts = postEncontrados.map(p => {
             const post = p.get({ plain: true });
+
+            if (!post.User) {
+                post.User = {
+                    id: null,
+                    username: 'usuario_eliminado'
+                };
+            }
             if (post.Images && post.Images.length > 0) {
                 post.Images.forEach(image => {
                     if (image.Ratings && image.Ratings.length > 0) {
@@ -64,14 +63,21 @@ export const getBuscarPublicaciones = async (req, res) => {
         });
 
         if (query) {
+            const queryLimpia = query.replace('@', '').toLowerCase().trim();
+
             posts = posts.filter(post => {
-                const coincidePost = post.title.toLowerCase().includes(query.toLowerCase()) ||
-                    (post.description && post.description.toLowerCase().includes(query.toLowerCase()));
+                // ¿Coincide el título o la descripción?
+                const coincidePost = (post.title && post.title.toLowerCase().includes(queryLimpia)) ||
+                    (post.description && post.description.toLowerCase().includes(queryLimpia));
 
-                // verifica si alguna de las etiquetas del Post coincide con la busqueda
-                const coincideTag = post.Tags && post.Tags.some(t => t.name.toLowerCase().includes(query.toLowerCase()));
+                // ¿Coincide alguna de las etiquetas?
+                const coincideTag = post.Tags && post.Tags.some(t => t.name && t.name.toLowerCase().includes(queryLimpia));
 
-                return coincidePost || coincideTag;
+                // ¿Coincide el nombre del fotógrafo?
+                const coincideUsuario = post.User && post.User.username.toLowerCase().includes(queryLimpia);
+
+                // Si se cumple CUALQUIERA de las tres, la publicación se muestra
+                return coincidePost || coincideTag || coincideUsuario;
             });
         }
 

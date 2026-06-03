@@ -32,7 +32,7 @@ block content
                 select.form-select.bg-secondary.bg-opacity-25.text-white.border-0(name="licencia")
                   option(value="") Todas las licencias
                   option(value="sinCopyright" selected=(filtrosActuales.licencia === 'sinCopyright')) Pública (Sin Copyright)
-                  option(value="conCopyright" selected=(filtrosActuales.licencia === 'conCopyright')) Protegida (Con Copyright)
+                  option(value="copyright" selected=(filtrosActuales.licencia === 'copyright')) Protegida (Con Copyright)
             
             //- boton para la busqueda
             .col-12(class=user ? 'col-md-2' : 'col-md-12 text-end')
@@ -61,7 +61,10 @@ block content
                   .card-body.p-3.d-flex.flex-column.justify-content-between
                     div
                       .d-flex.justify-content-between.align-items-center.mb-2
-                        a.small.text-decoration-none.text-primary.fw-bold(href=`/profile/${post.User.username}`) @#{post.User.username}
+                        if post.User.id
+                          a.small.text-decoration-none.text-primary.fw-bold(href=`/profile/${post.User.username}`) @#{post.User.username}
+                        else
+                          span.small.text-muted.fw-semibold @#{post.User.username}
                         span.badge(class=post.Images[0].licencia === 'sinCopyright' ? 'bg-success' : 'bg-danger')
                           | #{post.Images[0].licencia === 'sinCopyright' ? 'Pública' : 'Protegida'}
                       
@@ -72,10 +75,13 @@ block content
                       
                       - let image = post.Images[0]
                       include ratingStars.pug
-                      
-                      a.btn.btn-sm.btn-outline-dark.fw-semibold(href=`/profile/${post.User.username}`) Ver perfil
+
+                      if post.User.id
+                        a.btn.btn-sm.btn-outline-dark.fw-semibold(href=`/profile/${post.User.username}`) Ver perfil
+                      else 
+                        button.btn.btn-sm.btn-outline-secondary.fw-semibold(disabled) Sin perfil
         else
           //- vacio no hay resultados o es la primera vez que entra
           .text-center.py-5.bg-dark.text-white.rounded.shadow-sm(style="border: 1px solid #343a40; border-radius: 16px;")
             i.bi.bi-images.text-muted.display-4.d-block.mb-3
-            p.text-muted.mb-0 No se encontraron publicaciones con esos filtros o aún no iniciaste una búsqueda.
+            p.text-muted.mb-0 No se encontraron publicaciones con esos filtros 
