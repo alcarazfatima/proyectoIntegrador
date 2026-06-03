@@ -56,7 +56,7 @@ app.use('/', ratingRoutes);
 
 //CONEXION BD
 sequelize.sync({ alter: true })
-    .then(async () => {
+    .then(() => {
         console.log('Tablas sincronizadas');
         /*
         // --- INICIO DATOS DE PRUEBA ---
@@ -88,15 +88,19 @@ sequelize.sync({ alter: true })
 
         // --- FIN DATOS DE PRUEBA ---
 
-        // SERVIDOR
-        app.listen(PORT, (err) => {
-            if (err) {
-                console.error('Error al iniciar el servidor:', err);
-                return;
-            }
-            console.log(`Servidor escuchando en el puerto ${PORT}`);
-        });
     })
     .catch((err) => {
         console.error('Error sincronizancon con la BD', err);
-    })
+    });
+
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT, (err) => {
+        if (err) {
+            console.error('Error al iniciar el servidor:', err);
+            return;
+        }
+        console.log(`Servidor escuchando en el puerto ${PORT}`);
+    });
+}
+
+export default app;
