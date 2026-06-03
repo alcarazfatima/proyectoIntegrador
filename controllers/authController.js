@@ -1,4 +1,5 @@
 import { User } from "../models/User.js";
+import bcrypt from "bcrypt";
 
 export const registerUser = async (req, res) => {
     try {
@@ -6,6 +7,9 @@ export const registerUser = async (req, res) => {
         if (password !== confirmPassword) {
             return res.render('auth/signup', { error: 'Las contraseñas no coinciden' });
         }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
         await User.create(
             {
                 firstName,
@@ -13,7 +17,7 @@ export const registerUser = async (req, res) => {
                 email,
                 birthDate,
                 rol,
-                password,
+                password: hashedPassword,
                 username
             }
         );
@@ -31,19 +35,23 @@ export const loginUser = async (req, res) => {
         // Busco el usuario por su correo
         const usuarioEncontrado = await User.findOne({ where: { email } });
 
-        // Verifico si existe y si tiene bien la contraseña
-        if (usuarioEncontrado && usuarioEncontrado.password === password) {
+        // Verifico si existe 
+        if (usuarioEncontrado) {
+            const match = await bcrypt.compare(password, usuarioEncontrado.password);
+            if (match) {
+                // Se crea la session para recordar quién es en toda la app
+                req.session.user = {
+                    id: usuarioEncontrado.id,
+                    username: `${usuarioEncontrado.username}`,
+                    email: usuarioEncontrado.email,
+                    rol: usuarioEncontrado.rol
+                };
 
-            // Se crea la session para recordar quién es en toda la app
-            req.session.user = {
-                id: usuarioEncontrado.id,
-                username: `${usuarioEncontrado.username}`,
-                email: usuarioEncontrado.email,
-                rol: usuarioEncontrado.rol
-            };
-
-            // redirijo al home 
-            return res.redirect('/home');
+                // redirijo al home 
+                return res.redirect('/home');
+            } else {
+                return res.render('auth/login', { error: 'Correo o contraseña incorrectos' });
+            }
         } else {
             // Si falla, volvemos a mostrar el login avisando el error
             return res.render('auth/login', { error: 'Correo o contraseña incorrectos' });
