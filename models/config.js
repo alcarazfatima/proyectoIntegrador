@@ -11,9 +11,9 @@ const sequelize = new Sequelize({
     password: process.env.DB_PASSWORD,
     port: process.env.DB_PORT,
     dialectOptions: {
-        ssl: {
+        ssl: process.env.DB_SSL === 'false' ? false : {
             require: true,
-            rejectUnauthorized: false // esto es obligatorio para que Neon no  rechace la conexion
+            rejectUnauthorized: false
         }
     }
 });
