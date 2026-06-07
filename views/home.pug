@@ -67,6 +67,14 @@ block content
 
                 h4.card-title.fw-bold.text-dark.mb-2= post.title
                 p.card-text.text-muted.fs-5= post.description
+
+                //- aca van las etiquetas
+
+                if post.Tags && post.Tags.length > 0
+                  .mb-3.d-flex.flex-wrap.gap-1.mt-2
+                    each tag in post.Tags
+                      span.badge.rounded-pill.bg-light.text-dark.border.shadow-sm.px-2.py-1
+                        | ##{tag.name}
             
                 hr.text-muted.my-3
                 .d-flex.justify-content-between.align-items-center

@@ -64,6 +64,13 @@ export const getHome = async (req, res) => {
             }]
         });
 
+        listaIncludes.push({
+            model: Tag,
+            attributes: ['name'],
+            through: { attributes: [] },
+            required: false
+        });
+
         const postsInstances = await Post.findAll({
             where: filtroPost,
             include: listaIncludes,
