@@ -1,4 +1,4 @@
-import { User, Post, Image, Follow, Notification, Rating, Comment } from '../models/sync.js';
+import { User, Post, Image, Follow, Notification, Rating, Comment, Tag } from '../models/sync.js';
 import { alertaYVolver } from '../utils/alerta.js';
 
 export const getPerfilusuario = async (req, res) => {
@@ -35,6 +35,12 @@ export const getPerfilusuario = async (req, res) => {
                             attributes: ['username'],
                             required: false
                         }]
+                    },
+                    {
+                        model: Tag,
+                        attributes: ['name'],
+                        through: { attributes: [] },
+                        required: false
                     }
                 ]
             }],
