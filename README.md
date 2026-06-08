@@ -31,16 +31,16 @@ Una vez configurada la base de datos podes levantar el servidor con el comando
 
 ## Credenciales de prueba
 Para testaer las funcionalidades de autenticación podes iniciar sesión con los siguientes usuarios genrados por el script de inicialización
-- Usuario 1(comentarista)
+- Usuario 1
   - email: fatima@fotaza.com
-  - contraseña: fatima123
-- Usuario 2 (creador del post)
+  - contraseña: fatima
+- Usuario 2 
   - email: martin@fotaza.com
-  - contraseña: martin123
+  - contraseña: martin
 
 ## Tecnologias utilizadas
-- Backend: Node.js, Express,js, Express-ession
-- Base de Datos  y ORM: PostgreeSQL, Sequelize
+- Backend: Node.js, Express,js, Express-session
+- Base de Datos  y ORM: PostgreSQL, Sequelize
 - Frontend: Pug, Bootstrap
 - Seguridad: Bcrypt
 - Gestion de archivos: Multer

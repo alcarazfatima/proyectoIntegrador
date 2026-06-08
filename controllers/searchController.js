@@ -51,8 +51,10 @@ export const getBuscarPublicaciones = async (req, res) => {
                     if (image.Ratings && image.Ratings.length > 0) {
                         const suma = image.Ratings.reduce((acc, r) => acc + r.score, 0);
                         image.promedioVotos = Math.round(suma / image.Ratings.length);
+                        image.cantidadVotos = image.Ratings.length;
                     } else {
                         image.promedioVotos = 0;
+                        image.cantidadVotos = 0;
                     }
                     if (image.data) {
                         image.srcBase64 = `data:image/${image.extension};base64,${image.data.toString('base64')}`;

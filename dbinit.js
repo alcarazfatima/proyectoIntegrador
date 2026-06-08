@@ -14,7 +14,7 @@ async function inicializarBaseDeDatos() {
             firstName: 'Fatima',
             lastName: 'Alcaraz',
             email: 'fatima@fotaza.com',
-            password: 'fatima123',
+            password: 'fatima',
             username: 'FatuAlcaraz',
             birthDate: '2000-01-01',
             rol: 'usuario'
@@ -24,7 +24,7 @@ async function inicializarBaseDeDatos() {
             firstName: 'Martin',
             lastName: 'Machado',
             email: 'martin@fotaza.com',
-            password: 'martin123',
+            password: 'martin',
             username: 'TnchoMachado',
             birthDate: '2000-01-10',
             rol: 'usuario'
@@ -41,7 +41,7 @@ async function inicializarBaseDeDatos() {
         });
 
         await Image.create({
-            data: Buffer.from('/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=', 'base64'), extension: 'png',
+            data: Buffer.from('/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=', 'base64'),
             extension: 'jpeg',
             isMain: true,
             licencia: 'sinCopyright',
