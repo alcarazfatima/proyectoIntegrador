@@ -1,4 +1,4 @@
-import { User, Post, Image, Follow, Notification, Rating } from '../models/sync.js';
+import { User, Post, Image, Follow, Notification, Rating, Comment, Tag } from '../models/sync.js';
 import { alertaYVolver } from '../utils/alerta.js';
 
 export const getPerfilusuario = async (req, res) => {
@@ -19,13 +19,30 @@ export const getPerfilusuario = async (req, res) => {
                 model: Post,
                 where: { status: 'active' },
                 required: false,
-                include: [{
-                    model: Image,
-                    // filtro si existe (si es invitado, filtra; si esta logueado pasa)
-                    where: condicionesImagen,
-                    required: condicionesImagen ? true : false, // si filtra la imagen tiene q cumplir la condicion
-                    include: [{ model: Rating, required: false }]
-                }]
+                include: [
+                    {
+                        model: Image,
+                        // filtro si existe (si es invitado, filtra; si esta logueado pasa)
+                        where: condicionesImagen,
+                        required: condicionesImagen ? true : false, // si filtra la imagen tiene q cumplir la condicion
+                        include: [{ model: Rating, required: false }]
+                    },
+                    {
+                        model: Comment,
+                        required: false,
+                        include: [{
+                            model: User,
+                            attributes: ['username'],
+                            required: false
+                        }]
+                    },
+                    {
+                        model: Tag,
+                        attributes: ['name'],
+                        through: { attributes: [] },
+                        required: false
+                    }
+                ]
             }],
             order: [[Post, 'createdAt', 'DESC']]
         });
@@ -47,8 +64,10 @@ export const getPerfilusuario = async (req, res) => {
                         if (image.Ratings && image.Ratings.length > 0) {
                             const suma = image.Ratings.reduce((acc, r) => acc + r.score, 0);
                             image.promedioVotos = Math.round(suma / image.Ratings.length);
+                            image.cantidadVotos = image.Ratings.length
                         } else {
                             image.promedioVotos = 0;
+                            image.cantidadVotos = 0;
                         }
 
                         if (image.data) {

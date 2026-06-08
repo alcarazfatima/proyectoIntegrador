@@ -13,5 +13,11 @@
           else
             i.bi.bi-star.text-warning.fs-4
             
-    if image.promedioVotos > 0
-      small.text-muted.fw-medium.ms-1 (#{image.promedioVotos.toFixed(1)})
+    .d-flex.align-items-center.gap-1.ms-1
+      if image.promedioVotos > 0
+        small.text-dark.fw-bold #{image.promedioVotos.toFixed(1)}
+      else
+        small.text-muted.fw-medium 0.0
+      
+      //- contador de la cantidad de votos
+      small.text-muted.small.fw-normal (#{image.cantidadVotos || 0} #{image.cantidadVotos === 1 ? 'voto' : 'votos'})

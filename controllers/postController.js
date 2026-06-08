@@ -64,6 +64,13 @@ export const getHome = async (req, res) => {
             }]
         });
 
+        listaIncludes.push({
+            model: Tag,
+            attributes: ['name'],
+            through: { attributes: [] },
+            required: false
+        });
+
         const postsInstances = await Post.findAll({
             where: filtroPost,
             include: listaIncludes,
@@ -80,8 +87,10 @@ export const getHome = async (req, res) => {
                     if (img.Ratings && img.Ratings.length > 0) {
                         const suma = img.Ratings.reduce((acc, r) => acc + r.score, 0);
                         img.promedioVotos = Math.round(suma / img.Ratings.length);
+                        img.cantidadVotos = img.Ratings.length;
                     } else {
                         img.promedioVotos = 0; // Si no tiene votos, arranca en cero
+                        img.cantidadVotos = 0;
                     }
 
                     // Convertimos el binario a Base64 para Pug

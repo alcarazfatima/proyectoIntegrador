@@ -10,6 +10,19 @@ block content
         
         //- formulario de filtros combinables (apunta a la ruta del controlador)
         form(action="/search" method="GET" class="card p-4 shadow-sm bg-dark text-white" style="border-radius: 16px; border: 1px solid #343a40;")
+          
+          //- Bloque de estilos a ver si funciona
+          style.
+            .buscador-blanco::placeholder {
+              color: #ffffff !important;
+              opacity: 1 !important;
+            }
+            .buscador-blanco:focus {
+              background-color: rgba(108, 117, 125, 0.25) !important;
+              color: #ffffff !important;
+              box-shadow: none !important;
+            }
+          
           .row.g-3.align-items-end
             
             //- filtro segun titulo, etiqueta, descripcion
@@ -18,11 +31,14 @@ block content
               .input-group
                 span.input-group-text.bg-secondary.border-0.text-white
                   i.bi.bi-search
-                input.form-control.bg-secondary.bg-opacity-25.text-white.border-0(
+                //- Agregada la clase .buscador-blanco al final
+                input.form-control.bg-secondary.bg-opacity-25.text-white.border-0.buscador-blanco(
                   type="text" 
                   name="query" 
                   placeholder="Ej: playa, retrato, @usuario..." 
                   value=filtrosActuales.query
+                  autocomplete="off"
+                  style="box-shadow: none; color-scheme: dark;"
                 )
             
             //- filtro de licencia
@@ -84,4 +100,4 @@ block content
           //- vacio no hay resultados o es la primera vez que entra
           .text-center.py-5.bg-dark.text-white.rounded.shadow-sm(style="border: 1px solid #343a40; border-radius: 16px;")
             i.bi.bi-images.text-muted.display-4.d-block.mb-3
-            p.text-muted.mb-0 No se encontraron publicaciones con esos filtros 
+            p.text-muted.mb-0 No se encontraron publicaciones con esos filtros
