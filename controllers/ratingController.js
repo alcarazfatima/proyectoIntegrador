@@ -24,25 +24,18 @@ export const postValorar = async (req, res) => {
         });
 
         if (!created) {
-            valoracion.score = parseInt(score);
-            await valoracion.save();
+            return alertaYVolver(res, req, 400, "Ya valoraste esta imagen")
         }
 
-
-
         if (foto) {
-            if (created) {
-                await Notification.create({
-                    tipo: 'valoracion',
-                    receptorId: foto.Post.userId,
-                    actorId: userId,
-                    referenciaId: imageId,
-                    leida: false
-                })
-                console.log("¡Notificación de valoración creada con éxito!");
-            }
-        } else {
-            console.log("No se creó notificación. Motivo: O ya estaba votada, o es tu propia foto, o no se encontró el Post.");
+            await Notification.create({
+                tipo: 'valoracion',
+                receptorId: foto.Post.userId,
+                actorId: userId,
+                referenciaId: imageId,
+                leida: false
+            });
+            console.log("¡Notificación de valoración creada con éxito!");
         }
         res.redirect(req.get('referer') || '/home');
     } catch (error) {
