@@ -5,7 +5,7 @@
 Seguí estos pasos para clonar y ejecutar el proyecto localmente:
 
 ### 1.Clonar el repositorio
-git@github.com:alcarazfatima/proyectoIntegrador.git
+https://github.com/alcarazfatima/proyectoIntegrador.git
 
 ### 2.Instalar las dependencias
 Instala todos los paquetes necesarios declarados en el package.json
