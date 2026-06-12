@@ -5,7 +5,7 @@
 Seguí estos pasos para clonar y ejecutar el proyecto localmente:
 
 ### 1.Clonar el repositorio
-git@github.com:alcarazfatima/proyectoIntegrador.git
+https://github.com/alcarazfatima/proyectoIntegrador.git
 
 ### 2.Instalar las dependencias
 Instala todos los paquetes necesarios declarados en el package.json
@@ -66,3 +66,6 @@ El despliegue de **Fotaza** presentó varios retos técnicos que sirvieron como 
 ### 3. Optimización de Almacenamiento en la Base de Datos (Neon)
 * **Dificultad:** Al cumplir con el requerimiento de la cátedra de almacenar las imágenes como archivos binarios mediante datos de tipo `BYTEA`, la tasa de transferencia de datos de la base de datos gratuita en Neon llegó rápidamente a su límite crítico de cuota durante las pruebas de carga intensivas, interrumpiendo el servicio.
 * **Solución:** Se generó una nueva instancia limpia de la base de datos en Neon PostgreSQL.
+
+## URL servidor 
+https://proyectointegrador-7xsy.onrender.com
