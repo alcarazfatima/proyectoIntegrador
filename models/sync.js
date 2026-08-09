@@ -8,6 +8,7 @@ import { Follow } from './Follow.js';
 import { Report } from './Report.js';
 import { Notification } from './Notification.js';
 import { Collection } from './Collection.js';
+import { Message } from './Message.js';
 
 //relaciones de usuario
 
@@ -33,6 +34,10 @@ Comment.belongsTo(User, { foreignKey: 'userId' });
 User.hasMany(Report, { foreignKey: 'userId' })
 Report.belongsTo(User, { as: 'denunciante', foreignKey: 'userId' })
 
+User.hasMany(Message, { foreignKey: 'emisorId', as: 'mensajesEnviados' });
+User.hasMany(Message, { foreignKey: 'receptorId', as: 'mensajesRecibidos' });
+Message.belongsTo(User, { foreignKey: 'emisorId', as: 'emisor' });
+Message.belongsTo(User, { foreignKey: 'receptorId', as: 'receptor' });
 
 //relaciones de publicacion
 Post.hasMany(Comment, { foreignKey: 'postId', onDelete: 'CASCADE' });
@@ -90,5 +95,9 @@ Image.belongsToMany(User, {
 Image.hasMany(Rating, { foreignKey: 'imageId' });
 Rating.belongsTo(Image, { foreignKey: 'imageId' });
 
+// relacion entre mensaje y publicacion
+Message.belongsTo(Post, { foreignKey: 'postId' });
+Post.hasMany(Message, { foreignKey: 'postId' });
 
-export { User, Post, Image, Comment, Rating, Tag, Follow, Report, Notification, Collection };
+
+export { User, Post, Image, Comment, Rating, Tag, Follow, Report, Notification, Collection, Message };

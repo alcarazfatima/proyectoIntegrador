@@ -1,0 +1,102 @@
+extends layout.pug
+
+block content
+  include navbar.pug
+  
+  .container.my-5
+    //- cabecera y boton para nueva coleccion
+    .d-flex.justify-content-between.align-items-center.mb-4
+      div
+        h2.fw-bold.mb-1 Mis Colecciones
+        p.text-muted Organiza tus fotos e inspiraciones en carpetas personales.
+       
+      //- boton para nueva coleccion
+      button.btn.btn-primary.rounded-pill.px-4.shadow-sm(
+        type="button" 
+        data-bs-toggle="modal" 
+        data-bs-target="#modalNuevaColeccion"
+      )
+        i.bi.bi-folder-plus.me-2
+        | Nueva Colección
+
+    //- Modal crear coleccion
+    .modal.fade#modalNuevaColeccion(tabindex="-1" aria-hidden="true")
+      .modal-dialog.modal-dialog-centered
+        .modal-content.border-0.shadow
+          .modal-header.border-bottom-0
+            h5.modal-title.fw-bold Crear Nueva Colección
+            button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
+          form(action="/collections/crear" method="POST")
+            .modal-body
+              .mb-3
+                label.form-label.fw-semibold Nombre de la colección
+                input.form-control(type="text" name="nombre" placeholder="Ej: Paisajes, Ideas, Inspiración..." required)
+            .modal-footer.border-top-0
+              button.btn.btn-light.rounded-pill(type="button" data-bs-dismiss="modal") Cancelar
+              button.btn.btn-primary.rounded-pill.px-4(type="submit") Crear
+
+    //- lista de colecciones
+    if colecciones && colecciones.length > 0
+      .row.row-cols-1.g-4
+        each col in colecciones
+          .col
+            .card.shadow-sm.border-0.rounded-3.p-3
+              
+              .d-flex.align-items-center.justify-content-between.mb-3
+                .d-flex.align-items-center
+                  .bg-primary.text-white.rounded-circle.p-2.me-3.d-flex.align-items-center.justify-content-center(style="width: 42px; height: 42px;")
+                    i.bi.bi-folder-fill.fs-5
+                  div
+                    h4.fw-bold.mb-0= col.nombre
+                    small.text-muted #{col.Posts ? col.Posts.length : 0} publicaciones guardadas
+
+                //-  Formulario para eliminar coleccion completa
+                form(action="/collections/eliminar" method="POST" onsubmit="return confirm('¿Seguro que querés eliminar esta colección?');" class="m-0")
+                  input(type="hidden" name="collectionId" value=col.id)
+                  button.btn.btn-outline-danger.btn-sm.rounded-circle(type="submit" title="Eliminar colección")
+                    i.bi.bi-trash3-fill
+
+              //- galeria de la coleccion
+              if col.Posts && col.Posts.length > 0
+                .row.row-cols-2.row-cols-md-4.g-3.mt-2
+                  each post in col.Posts
+                    .col
+                      //- x flotante
+                      .card.h-100.border-0.shadow-sm.overflow-hidden.position-relative
+                        
+                        //- formulario para sacar post de la coleccion
+                        form.position-absolute.top-0.end-0.m-2(action="/collections/quitar-post" method="POST" style="z-index: 10;")
+                          input(type="hidden" name="collectionId" value=col.id)
+                          input(type="hidden" name="postId" value=post.id)
+                          button.btn.btn-sm.btn-dark.bg-opacity-75.text-white.rounded-circle.p-1(
+                            type="submit" 
+                            title="Quitar de la colección" 
+                            style="width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border: none;"
+                          )
+                            i.bi.bi-x-lg(style="font-size: 0.7rem;")
+
+                        if post.Images && post.Images.length > 0 && post.Images[0].srcBase64
+                          img.w-100(
+                            src=post.Images[0].srcBase64 
+                            alt=post.title 
+                            style="height: 160px; object-fit: cover;"
+                          )
+                        .card-body.p-2.text-center
+                          h6.card-title.fw-bold.text-truncate.mb-1= post.title
+                          small.text-muted @#{post.User ? post.User.username : 'desconocido'}
+              else
+                .alert.alert-light.text-center.my-2.border-0
+                  i.bi.bi-image.text-muted.me-2
+                  span.text-muted Esta colección aún no tiene publicaciones guardadas.
+
+    else
+      .text-center.py-5
+        i.bi.bi-bookmarks.display-1.text-muted.mb-3.d-block
+        h4.fw-bold No tenés ninguna colección todavía
+        p.text-muted Creá tu primera colección para empezar a guardar tus fotos favoritas.
+        button.btn.btn-primary.rounded-pill.px-4.mt-2(
+          type="button" 
+          data-bs-toggle="modal" 
+          data-bs-target="#modalNuevaColeccion"
+        )
+          | Crear mi primera colección
