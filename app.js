@@ -7,6 +7,9 @@ import userRoutes from './routes/userRoutes.js';
 import commentRoutes from './routes/commentRoutes.js';
 import ratingRoutes from './routes/ratingRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
+import collectionsRoutes from './routes/collectionsRoutes.js';
+import interestRoutes from './routes/interestRoutes.js';
+import messageRoutes from './routes/messageRoutes.js';
 import sequelize from './models/config.js';
 import { Post, User, Image, Notification } from './models/sync.js';
 import './models/sync.js';
@@ -53,6 +56,9 @@ app.use('/', userRoutes);
 app.use('/', commentRoutes);
 app.use('/', notificationRoutes);
 app.use('/', ratingRoutes);
+app.use('/', collectionsRoutes);
+app.use('/', interestRoutes);
+app.use('/mensajes', messageRoutes);
 
 //CONEXION BD
 sequelize.sync({ alter: true })

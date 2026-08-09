@@ -1,5 +1,6 @@
-import { Rating, Image, Notification, Post } from '../models/sync.js';
+import { Rating, Image, Post } from '../models/sync.js';
 import { alertaYVolver } from '../utils/alerta.js';
+import { crearNotificacion } from './notificationController.js';
 
 export const postValorar = async (req, res) => {
     try {
@@ -27,13 +28,12 @@ export const postValorar = async (req, res) => {
             return alertaYVolver(res, req, 400, "Ya valoraste esta imagen")
         }
 
-        if (foto) {
-            await Notification.create({
-                tipo: 'valoracion',
+        if (foto && foto.Post) {
+            await crearNotificacion({
                 receptorId: foto.Post.userId,
                 actorId: userId,
+                tipo: 'valoracion',
                 referenciaId: imageId,
-                leida: false
             });
             console.log("¡Notificación de valoración creada con éxito!");
         }

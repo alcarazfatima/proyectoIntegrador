@@ -1,4 +1,5 @@
-import { Comment, Post, Notification } from "../models/sync.js";
+import { Comment, Post } from "../models/sync.js";
+import { crearNotificacion } from "./notificationController.js";
 
 export const postCrearComentario = async (req, res) => {
 
@@ -25,14 +26,14 @@ export const postCrearComentario = async (req, res) => {
 
         if (publicacion) {
             // solo cuando el comentario es de otro, no del dueño del post
-            if (parseInt(userId) !== parseInt(publicacion.userId)) {
-                await Notification.create({
-                    tipo: 'comentario',
-                    receptorId: publicacion.userId,
-                    actorId: userId,
-                    referenciaId: nuevoComentario.id
-                });
-            }
+
+            await crearNotificacion({
+                receptorId: publicacion.userId,
+                actorId: userId,
+                tipo: 'comentario',
+                referenciaId: nuevoComentario.id
+            });
+
         }
 
         res.redirect(req.get('referer') || '/home');

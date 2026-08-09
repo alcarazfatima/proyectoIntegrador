@@ -1,0 +1,79 @@
+//- barra de interaccion(estilo Instagram)
+.d-flex.align-items-center.justify-content-between.px-3.pt-2.pb-1
+  //- iconos a la izquierda
+  .d-flex.align-items-center.gap-3
+
+    //- boton "ME INTERESA" (corazon)
+    if user && user.id !== post.userId
+      form(action="/me-interesa" method="POST" id=`form-interes-${post.id}` class="m-0 p-0")
+        input(type="hidden" name="postId" value=post.id)
+
+        if post.meInteresa
+          button.btn.btn-link.p-0.text-danger(type="submit" title="Ya mostraste interés en esta foto")
+            i.bi.bi-heart-fill.fs-4
+        else
+          button.btn.btn-link.p-0.text-dark(type="submit" title="Me interesa adquirir esta foto")
+            i.bi.bi-heart.fs-4
+    else if !user
+      a.btn.btn-link.p-0.text-dark(href="/auth/login" title="Iniciá sesión para mostrar interés")
+        i.bi.bi-heart.fs-4
+
+    //- boton para ocultar/mostrar comentarios
+    button.btn.btn-link.p-0.text-dark(
+      type="button" 
+      data-bs-toggle="collapse" 
+      data-bs-target=`#collapseComentarios-${post.id}` 
+      aria-expanded="false"
+      title="Ver / Ocultar comentarios"
+    )
+      i.bi.bi-chat.fs-4
+
+  //- banderin de guardar en coleccion
+  if user
+    button.btn.btn-link.p-0.text-dark(
+      type="button" 
+      data-bs-toggle="modal" 
+      data-bs-target=`#modalGuardar-${post.id}`
+      title="Guardar en colección"
+    )
+      i.bi.bi-bookmark.fs-4
+
+//- modal desplegable para elegir o crear coleccion
+if user
+  .modal.fade(id=`modalGuardar-${post.id}` tabindex="-1" aria-hidden="true")
+    .modal-dialog.modal-dialog-centered.modal-sm
+      .modal-content.border-0.shadow.rounded-4
+        .modal-header.border-bottom-0.pb-0
+          h6.modal-title.fw-bold.text-center.w-100 Guardar en...
+          button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
+
+        .modal-body.p-3
+          //- guardar en coleccion existente
+          if misColecciones && misColecciones.length > 0
+            form(action="/collections/guardar-post" method="POST")
+              input(type="hidden" name="postId" value=post.id)
+              
+              .mb-3
+                select.form-select.form-select-sm.rounded-3(name="collectionId" required)
+                  each col in misColecciones
+                    option(value=col.id)= col.nombre
+              
+              button.btn.btn-primary.btn-sm.w-100.rounded-pill.fw-semibold(type="submit")
+                | Guardar en esta colección
+
+            hr.my-3.text-muted
+
+          //- crear una nueva coleccion en el momento
+          form(action="/collections/crear-y-guardar" method="POST")
+            input(type="hidden" name="postId" value=post.id)
+            small.text-muted.fw-semibold.d-block.mb-2 Crear nueva colección:
+            
+            .input-group.input-group-sm.mb-2
+              input.form-control.rounded-start-3(
+                type="text" 
+                name="nombre" 
+                placeholder="Ej. Favoritos" 
+                required
+              )
+              button.btn.btn-dark.rounded-end-3(type="submit")
+                i.bi.bi-plus-lg

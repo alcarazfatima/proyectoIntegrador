@@ -45,3 +45,20 @@ export const postMarcarLeida = async (req, res) => {
         res.status(500).send('Error en el serividor' + error.message);
     }
 };
+
+export const crearNotificacion = async ({ receptorId, actorId, tipo, referenciaId = null }) => {
+    try {
+        if (receptorId === actorId) return;
+
+        await Notification.create({
+            receptorId,
+            actorId,
+            tipo,
+            referenciaId,
+            leida: false
+        })
+
+    } catch (error) {
+        console.error('Error al crear notificación', error);
+    }
+}
