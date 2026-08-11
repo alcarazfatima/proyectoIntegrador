@@ -11,6 +11,23 @@ block content
         h2.fw-bold.text-dark Explora las mejores fotos de nuestra comunidad
         p.text-muted Registrate para puntuar el contenido.
 
+    if user 
+      .d-flex.justify-content-center.mb-5
+        .d-inline-flex.gap-2.shadow-sm.rounded-pill.p-2.bg-light
+          a.btn.btn-sm.rounded-pill.px-4.fw-semibold(
+            href="/home?feed=explorar" 
+            class=(currentFeed === 'explorar' ? 'btn-primary text-white' : 'btn-light text-muted')
+          )
+            i.bi.bi-compass.me-2
+            | Explorar todo
+
+          a.btn.btn-sm.rounded-pill.px-4.fw-semibold(
+            href="/home?feed=siguiendo" 
+            class=(currentFeed === 'siguiendo' ? 'btn-primary text-white' : 'btn-light text-muted')
+          )
+            i.bi.bi-people-fill.me-2
+            | Siguiendo
+
     .row.row-cols-1.justify-content-center.g-5
       if posts && posts.length > 0
         each post in posts
@@ -43,6 +60,7 @@ block content
               else
                 .bg-secondary.text-white.text-center.py-5(style="height: 350px; display: flex; align-items: center; justify-content: center;") Sin Imagen
               
+              include barraPost.pug
               .card-body.p-4
                 //- Cabecera con el autor y botón Seguir
                 if post.User
@@ -90,4 +108,11 @@ block content
                 include comment.pug
       else
         .col.col-md-9.col-lg-7.text-center.py-5
-          .alert.alert-info No hay publicaciones disponibles en este momento.
+          if currentFeed === 'siguiendo'
+            .alert.alert-light.border.shadow-sm.p-5
+              i.bi.bi-person-plus.display-4.text-primary.mb-3.d-block
+              h4.fw-bold No hay publicaciones
+              p.text-muted Los usuarios que seguís no han publicado nada aún o no estás siguiendo a nadie.
+              a.btn.btn-outline-primary.btn-sm.rounded-pill.mt-2(href="/home?feed=explorar") Descubrir fotógrafos
+          else
+            .alert.alert-info No hay publicaciones disponibles en este momento.

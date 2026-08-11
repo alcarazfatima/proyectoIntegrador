@@ -1,5 +1,4 @@
-import sequelize from '../models/config.js';
-import { Post, Image, User, Follow, Comment, Rating, Tag } from '../models/sync.js';
+import { Post, Image, User, Follow, Comment, Rating, Tag, Collection, Message, Notification } from '../models/sync.js';
 import { Op } from 'sequelize';
 import { alertaYVolver } from '../utils/alerta.js';
 
@@ -7,6 +6,12 @@ export const getHome = async (req, res) => {
     try {
         let filtroPost = { status: 'active' };
         let condicionesImagen = null;
+        let idSeguidos = [];
+        let misColecciones = [];
+        let postInteresadosIds = [];
+
+        const currentFeed = req.query.feed || 'explorar';
+
 
         if (!req.session || !req.session.user) {
             condicionesImagen = { licencia: 'sinCopyright' };
@@ -18,14 +23,25 @@ export const getHome = async (req, res) => {
                 attributes: ['followingId']
             });
 
-            const idSeguidos = conexiones.map(c => c.followingId);
+            idSeguidos = conexiones.map(c => c.followingId);
 
-            filtroPost[Op.or] = [
-                { userId: { [Op.in]: idSeguidos } },
-                { userId: miId },
-                { '$Images.licencia$': 'sinCopyright' }
-            ];
-            req.listaSeguidos = idSeguidos;
+            if (currentFeed === 'siguiendo') {
+
+                filtroPost.userId = { [Op.in]: idSeguidos };
+            }
+            misColecciones = await Collection.findAll({
+                where: { userId: miId },
+                attributes: ['id', 'nombre'],
+                raw: true
+            });
+
+            const misIntereses = await Message.findAll({
+                where: { emisorId: miId },
+                attributes: ['postId'],
+                raw: true
+            });
+
+            postInteresadosIds = misIntereses.map(m => m.postId).filter(id => id !== null);
         }
 
         const listaIncludes = [];
@@ -49,7 +65,7 @@ export const getHome = async (req, res) => {
         if (User) {
             listaIncludes.push({
                 model: User,
-                attributes: ['username', 'firstName', 'lastName'],
+                attributes: ['id', 'username', 'firstName', 'lastName'],
                 required: false
             });
         }
@@ -77,9 +93,10 @@ export const getHome = async (req, res) => {
             order: [['createdAt', 'DESC']]
         });
 
-        // PROCESAMIENTO SEGURO EN JAVASCRIPT (Cero cuelgues de SQL)
         const posts = postsInstances.map(instancia => {
             const p = instancia.get({ plain: true });
+
+            p.meInteresa = postInteresadosIds.includes(p.id);
 
             if (p.Images && p.Images.length > 0) {
                 p.Images.forEach(img => {
@@ -102,10 +119,23 @@ export const getHome = async (req, res) => {
             return p;
         });
 
+        let notiNoLeida = 0;
+        if (req.session && req.session.user) {
+            notiNoLeida = await Notification.count({
+                where: {
+                    receptorId: req.session.user.id,
+                    leida: false
+                }
+            });
+        }
+
         res.render('home', {
             posts: posts || [],
             user: req.session?.user || null,
-            misSeguidos: req.listaSeguidos || []
+            misSeguidos: idSeguidos,
+            currentFeed: currentFeed,
+            misColecciones,
+            notiNoLeida
         });
 
     } catch (error) {
@@ -117,20 +147,20 @@ export const getCrearPost = (req, res) => {
     res.render('newPost', { user: req.session?.user });
 };
 
-// 3. POST: Recibe las fotos y los textos, y los guarda en la base de datos
+// Recibe las fotos y los textos, y los guarda en la base de datos
 export const postCrearPost = async (req, res) => {
     try {
         if (!req.session || !req.session.user) {
             return alertaYVolver(res, req, 401, 'Tenes que estar logueado para crear una publicación');
         }
         const { title, description, licencia, tags } = req.body;
-        const files = req.files; // Acá aloja Multer los archivos cargados
+        const files = req.files; // Aca aloja Multer los archivos cargados
 
         if (!files || files.length === 0) {
             return alertaYVolver(res, req, 400, 'Tenes que subir al menos una imagen');
         }
 
-        // 1. Creamos el registro del Posteo en la base de datos
+        // registro del Posteo en la base de datos
         const nuevoPost = await Post.create({
             title,
             description,

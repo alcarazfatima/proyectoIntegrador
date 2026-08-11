@@ -1,0 +1,35 @@
+extends layout.pug
+
+block content
+  include navbar.pug
+
+  .container.my-5
+    .row.justify-content-center
+      .col-12.col-md-8
+        h3.fw-bold.text-dark.mb-4
+          i.bi.bi-chat-left-dots-fill.me-2.text-primary
+          | Mis Mensajes
+
+        if conversaciones && conversaciones.length > 0
+          .list-group.shadow-sm
+            each conv in conversaciones
+              a.list-group-item.list-group-item-action.p-3(
+                href=`/mensajes/${conv.usuario.id}`
+                class=conv.noLeido ? 'border-start border-primary border-3 bg-light' : ''
+              )
+                .d-flex.justify-content-between.align-items-center
+                  .d-flex.align-items-center.gap-3
+                    i.bi.bi-person-circle.fs-2.text-secondary
+                    div
+                      h6.mb-0.fw-bold @#{conv.usuario.username}
+                      p.mb-0.text-muted.text-truncate(style="max-width: 300px;")= conv.ultimoMensaje
+                  
+                  .text-end
+                    small.text-muted.d-block
+                      | #{new Date(conv.fecha).toLocaleDateString('es-AR')}
+                    if conv.noLeido
+                      span.badge.bg-primary.rounded-pill.mt-1 Nuevo
+        else
+          .text-center.py-5.bg-white.rounded.shadow-sm.border
+            i.bi.bi-chat-square-dots.text-muted.display-4
+            p.text-muted.mt-2 No tenés ningún mensaje todavía.
