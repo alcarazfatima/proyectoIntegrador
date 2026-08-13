@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import session from 'express-session';
+import { auth } from './middlewares/auth.js';
 import authRouter from './routes/auth.js';
 import postRoutes from './routes/postRoutes.js';
 import userRoutes from './routes/userRoutes.js';
@@ -40,13 +41,10 @@ app.use(session({
     }
 }));
 
-app.use(async (req, res, next) => {
-    next();
-
-});
+app.use(auth)
 
 // RUTAS
-//app.use(auth);
+
 app.get('/', (req, res) => {
     res.render('index');
 })

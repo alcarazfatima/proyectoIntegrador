@@ -1,39 +1,40 @@
-.mt-4.pt-3.border-top
-  h6.fw-bold.text-dark.mb-3 
-    i.bi.bi-chat-left-text.me-2
-    | Comentarios
+.collapse(id=`collapseComentarios-${post.id}`)
+  .mt-3.pt-3.border-top
+    h6.fw-bold.text-dark.mb-3 
+      i.bi.bi-chat-left-text.me-2
+      | Comentarios
 
-  //- listado de comentarios existentes
-  if post.Comments && post.Comments.length > 0
-    .mb-3(style="max-height: 200px; overflow-y: auto;")
-      each com in post.Comments
-        .bg-light.p-2.rounded.mb-2.small
-          .d-flex.justify-content-between.align-items-center.mb-1
-            if com.User
-              a.fw-bold.text-dark.text-decoration-none(href=`/profile/${com.User.username}`) @#{com.User.username}
-            else 
-              span.fw-bold.text-dark @anonimo
+    //- Listado de comentarios existentes
+    if post.Comments && post.Comments.length > 0
+      .mb-3(style="max-height: 200px; overflow-y: auto;")
+        each com in post.Comments
+          .bg-light.p-2.rounded.mb-2.small
+            .d-flex.justify-content-between.align-items-center.mb-1
+              if com.User
+                a.fw-bold.text-dark.text-decoration-none(href=`/profile/${com.User.username}`) @#{com.User.username}
+              else 
+                span.fw-bold.text-dark @anonimo
 
-            if com.createdAt
-              span.text-muted(style="font-size: 0.7rem;")= new Date(com.createdAt).toLocaleDateString()
-          p.mb-0.text-secondary= com.content
-  else
-    p.text-muted.small.fst-italic.mb-3 No hay comentarios aún.
+              if com.createdAt
+                span.text-muted(style="font-size: 0.7rem;")= new Date(com.createdAt).toLocaleDateString()
+            p.mb-0.text-secondary= com.content
+    else
+      p.text-muted.small.fst-italic.mb-3 No hay comentarios aún.
 
-  //- formulario para escribir un nuevo comentario
-  if user
-    form(action="/comment" method="POST" class="mt-2")
-      input(type="hidden" name="postId" value=post.id)
-      .input-group.input-group-sm
-        input.form-control(
-          type="text" 
-          name="content" 
-          placeholder="Escribe un comentario..." 
-          required
-        )
-        button.btn.btn-primary(type="submit") Enviar
-  else
-    .bg-light.p-2.rounded.text-center
-      small.text-muted 
-        a.text-decoration-none(href="/auth/login") Inicia sesión 
-        | para dejar un comentario.
+    //- Formulario para escribir un nuevo comentario
+    if user
+      form(action="/comment" method="POST" class="mt-2")
+        input(type="hidden" name="postId" value=post.id)
+        .input-group.input-group-sm
+          input.form-control(
+            type="text" 
+            name="content" 
+            placeholder="Escribe un comentario..." 
+            required
+          )
+          button.btn.btn-primary(type="submit") Enviar
+    else
+      .bg-light.p-2.rounded.text-center
+        small.text-muted 
+          a.text-decoration-none(href="/auth/login") Inicia sesión 
+          | para dejar un comentario.
