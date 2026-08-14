@@ -12,8 +12,13 @@ nav.navbar.navbar-dark.bg-dark.sticky-top.shadow-sm
         a.btn.btn-outline-warning.fw-semibold.d-inline-flex.align-items-center.justify-content-center.px-0.py-2(href="/search" title="Buscar publicaciones" style="width: 42px; height: 42px;")
           i.bi.bi-search.fs-5
 
-        a.btn.btn-outline-warning.fw-semibold.d-inline-flex.align-items-center.justify-content-center.px-0.py-2(href="/notifications" style="width: 42px; height: 42px;")
+        //- campana con contador de no leidas
+        a.btn.btn-outline-warning.fw-semibold.d-inline-flex.align-items-center.justify-content-center.px-0.py-2.position-relative(href="/notifications" title="Notificaciones" style="width: 42px; height: 42px;")
           i.bi.bi-bell-fill.fs-5
+          if notiNoLeida && notiNoLeida > 0
+            span.position-absolute.top-0.start-100.translate-middle.badge.rounded-pill.bg-danger(style="font-size: 0.65rem;")
+              | #{notiNoLeida > 99 ? '99+' : notiNoLeida}
+              span.visually-hidden Notificaciones no leídas
         a.btn.btn-outline-warning.fw-semibold.d-flex.align-items-center.px-3.py-2(href=`/profile/${user.username}`)
           i.bi.bi-person-circle.me-2
           | Mi Perfil

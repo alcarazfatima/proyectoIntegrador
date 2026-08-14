@@ -25,9 +25,12 @@ block content
                     a.btn.btn-sm.btn-outline-warning.fw-bold.px-3(href="/collections" style="border-radius: 20px;")
                       i.bi.bi-bookmark-heart.me-1
                       | Mis Colecciones 
-                    a.btn.btn-sm.btn-outline-warning.fw-bold.px-3(href="/mensajes" style="border-radius: 20px;")
+                    a.btn.btn-sm.btn-outline-warning.fw-bold.px-3.position-relative(href="/mensajes" style="border-radius: 20px;")
                       i.bi.bi-chat-dots-fill.me-1
                       | Mis Mensajes 
+                      if mensajesSinLeer && mensajesSinLeer > 0
+                        span.position-absolute.top-0.start-100.translate-middle.badge.rounded-pill.bg-danger(style="font-size: 0.65rem;")
+                          | #{mensajesSinLeer > 99 ? '99+' : mensajesSinLeer}
                 
                 //- BOTON DE SEGUIMIENTO 
                 if !esMiPerfil && user

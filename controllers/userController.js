@@ -1,5 +1,6 @@
-import { User, Post, Image, Follow, Notification, Rating, Comment, Tag } from '../models/sync.js';
+import { User, Post, Image, Follow, Rating, Comment, Tag, Notification, Message } from '../models/sync.js';
 import { alertaYVolver } from '../utils/alerta.js';
+import { crearNotificacion } from './notificationController.js';
 
 export const getPerfilusuario = async (req, res) => {
     try {
@@ -93,6 +94,8 @@ export const getPerfilusuario = async (req, res) => {
 
             yaLoSigo = !!existeSeguimiento;
         }
+
+
         res.render('profile', {
             perfilUser: usuario,
             user: req.session?.user || null, //por las dudas navegacion segura
@@ -127,12 +130,11 @@ export const postSeguirUsuario = async (req, res) => {
         });
 
         if (created) {
-            await Notification.create({
-                tipo: 'seguimiento',
+            await crearNotificacion({
                 receptorId: followingId,
                 actorId: followerId,
+                tipo: 'seguimiento',
                 referenciaId: follow.id,
-                leida: false
             })
         }
 

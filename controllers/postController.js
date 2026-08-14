@@ -119,23 +119,12 @@ export const getHome = async (req, res) => {
             return p;
         });
 
-        let notiNoLeida = 0;
-        if (req.session && req.session.user) {
-            notiNoLeida = await Notification.count({
-                where: {
-                    receptorId: req.session.user.id,
-                    leida: false
-                }
-            });
-        }
-
         res.render('home', {
             posts: posts || [],
             user: req.session?.user || null,
             misSeguidos: idSeguidos,
             currentFeed: currentFeed,
-            misColecciones,
-            notiNoLeida
+            misColecciones
         });
 
     } catch (error) {
